@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Página de inicio</title>
+    <link rel="shortcut icon" href="/images/logo2.png" type="image/x-icon">
+</head>
+<body>
+
+    <div class="menu">
+
+    </div>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form>
+                <h1>¡Crea tu cuenta aquí!</h1><br>
+                <input id="nombre" type="text" placeholder="Nombre">
+                <input id="apellidoP" type="text" placeholder="Apellido paterno">
+                <input id="apellidoM" type="text" placeholder="Apellido materno">
+                <input id="correo" type="email" placeholder="Correo">
+                <input id="pass" type="password" placeholder="Contraseña">
+                <button type="button" id="registro">Registrarse</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form>
+                <h1>¡Inicia sesion!</h1><br>
+                <input type="email" placeholder="Correo">
+                <input type="password" placeholder="Contraseña">
+                <button type="button" onclick="" id="inicioses">Iniciar sesión</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>¿Ya estas dado de alta?</h1>
+                    <p>Ingresa con tu cuenta para acceder al sistema</p>
+                    <button class="hidden" id="login">Iniciar sesión</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>¿Sin cuenta?</h1>
+                    <p>Registrate para tener acceso completo al sistema</p>
+                    <button class="hidden" id="register">¡Crear cuenta!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="animacion.js"></script>
+    
+</body>
+</html>
