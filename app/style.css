@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+
 *{
     margin: 0;
     padding: 0;
@@ -7,10 +8,17 @@
     box-sizing: border-box;
 }
 
-section{
+body{
+    background-image: url(./resources/images/back.png);
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.Barra{
     position: relative;
     width: 100%;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -24,12 +32,13 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: white;
 }
 
 header .logo{
     position: relative;
     color: #000;
-    font-size: 30px;
+    font-size: 2.5vw;
     text-decoration: none;
     text-transform: uppercase;
     font-weight: 800;
@@ -61,45 +70,63 @@ header .nav a:hover{
 header h2 a .imglogo{
     width: 50px;
     height: 50px;
-    margin-right: 10px;
+    margin-right: 0.5vw;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1vw;
 }
 
-.contenido{
-    max-width: 650px;
-    margin: 60px 100px;
+aside{
+    float: left;
+    width: 200px;
+    background-color: white;
+    padding: 30px;
+    border-right: solid 1px;
+    margin: 2vw;
 }
 
-.contenido .info h2{
-    color: #900C3F;
-    font-size: 55px;
-    text-transform: uppercase;
-    font-weight: 800;
-    letter-spacing: 2px;
-    line-height: 60px;
-    margin-bottom: 30px;
-}
-
-.contenido .info p{
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 40px;
-}
-
-.contenido .info a{
-    color: white;
-    background-color: #C70039;
+.opciones{
     text-decoration: none;
-    text-transform: uppercase;
-    font-weight: 700;
+    transition: 1s;
     letter-spacing: 2px;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: 0.3s;
-    transition-property: background-color;
+    color: black;
 }
 
-.contenido .info a:hover{
-    background-color: #900C3F;
+.opciones:hover{
+    color: #900C3F;
+}
+
+aside{
+    background-color: transparent   ;
+}
+
+.widget{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: 0.3s;
+    margin-top: 50px;
+}
+
+.widget:hover{
+    transform: scale(1.1);
+}
+
+.main{
+    position: relative;
+    width: calc(80% - 200px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 2vw;
 }
 
 label{
@@ -110,8 +137,6 @@ label{
     z-index: 3;
     display: none;
 }
-
-/* diseño responsivo */
 
 @media (max-width: 960px){
     header .nav{
