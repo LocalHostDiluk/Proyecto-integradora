@@ -1,3 +1,9 @@
+<?php
+session_start();
+if (empty($_SESSION["id"])) {
+    header("Location: ../login/login.php");
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +21,7 @@
         <header>
             <h2><a href="index.html" class="logo"><img class="imglogo" src="" alt="logo escuela">Escuela secundaria #4</a></h2>    
             <nav class="nav">
-                <a href="/login/login.html">Cerrar sesion</a>
+                <a href="../controlador_cerrar.php">Cerrar sesion</a>
                 <a href="">Calendario Escolar 2024</a>
             </nav>
     
@@ -33,12 +39,14 @@
         </div>
 
         <div class="widget">
-            <a class="opciones" href="">Opción 1</a>
+            <a class="opciones" href="">Reportes</a>
         </div>
 
         <div class="widget">
-            <a class="opciones" href="">Opción 2</a>
+            <a class="opciones" href="">Calificaciones</a>
         </div>
+
+        <div class="widget"><a href="" class="opciones">Biblioteca act.</a></div>
     </aside>
     
     <section class="main">
