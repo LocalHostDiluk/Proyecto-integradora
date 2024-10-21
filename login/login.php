@@ -28,7 +28,7 @@
                     <ion-icon name="lock-closed-outline"></ion-icon>
                     <input type="password" id="passlog" name="passlog" placeholder="Password">
                 </div>
-                <input type="submit" class="button" name="btningresar" placeholder="INICIAR SESION">
+                <input type="submit" class="button" name="btningresar">
             </form>
         </div>
 
@@ -36,10 +36,7 @@
             <form class="sign-up">
                 <h2>Registrarse</h2>
                 <div class="social-networks">
-                    <ion-icon name="logo-twitch"></ion-icon>
-                    <ion-icon name="logo-twitter"></ion-icon>
-                    <ion-icon name="logo-instagram"></ion-icon>
-                    <ion-icon name="logo-tiktok"></ion-icon>
+
                 </div>
                 <span>Use su correo electrónico para registrarse</span>
                 <div class="container-input">
@@ -47,14 +44,26 @@
                     <input type="text" id="nombrereg" name="nombrereg" placeholder="Nombre">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="mail-outline"></ion-icon>
-                    <input type="text" id="correoreg" placeholder="Email">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <input type="text" id="apellido" name="apellido" placeholder="Apellido">
                 </div>
                 <div class="container-input">
                     <ion-icon name="lock-closed-outline"></ion-icon>
                     <input type="password" id="passreg" placeholder="Password">
                 </div>
-                <input type="submit" class="button" placeholder="REGISTRARSE" >
+                <div class="container-input">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input type="password" id="passreg" placeholder="Password">
+                </div>
+                <div class="container-input">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input type="password" id="passreg" placeholder="Password">
+                </div>
+                <div class="container-input">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input type="password" id="passreg" placeholder="Password">
+                </div>
+                <input type="submit" class="button" name="btnregistrar" id="btnregistrar">
             </form>
         </div>
 
