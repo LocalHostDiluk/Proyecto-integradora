@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <title>Login Page</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -21,47 +22,50 @@
                 </div>
                 <span>Use su correo y contraseña</span>
                 <div class="container-input">
-                    <ion-icon name="mail-outline"></ion-icon>
-                    <input type="text" id="correolog" name="correolog" placeholder="Email">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="text" id="correolog" name="correolog" placeholder="Usuario/correo">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="passlog" name="passlog" placeholder="Password">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passlog" name="passlog" placeholder="Contraseña">
                 </div>
                 <input type="submit" class="button" name="btningresar">
             </form>
         </div>
 
         <div class="container-form">
-            <form class="sign-up">
+            <form class="sign-up" method="post" action="">
                 <h2>Registrarse</h2>
                 <div class="social-networks">
-
+                    <?php
+                    include("../conexion.php");
+                    include("../controlador_reg.php");
+                    ?>
                 </div>
-                <span>Use su correo electrónico para registrarse</span>
+                <span>Ingrese sus datos para registrarse</span>
                 <div class="container-input">
-                    <ion-icon name="person-outline"></ion-icon>
+                    <i class="fa-solid fa-user"></i>
                     <input type="text" id="nombrereg" name="nombrereg" placeholder="Nombre">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="person-outline"></ion-icon>
+                    <i class="fa-solid fa-user"></i>
                     <input type="text" id="apellido" name="apellido" placeholder="Apellido">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="passreg" placeholder="Password">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="text" id="telefono" name="telefono" placeholder="Telefono">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="passreg" placeholder="Password">
+                    <i class="fa-solid fa-house"></i>
+                    <input type="text" id="direccion" name="direccion" placeholder="Dirección">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="passreg" placeholder="Password">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="text" id="user" name="user" placeholder="Usuario/Correo">
                 </div>
                 <div class="container-input">
-                    <ion-icon name="lock-closed-outline"></ion-icon>
-                    <input type="password" id="passreg" placeholder="Password">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passreg" name="passreg" placeholder="Contraseña">
                 </div>
                 <input type="submit" class="button" name="btnregistrar" id="btnregistrar">
             </form>
