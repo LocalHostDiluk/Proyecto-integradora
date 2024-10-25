@@ -13,6 +13,7 @@ if (empty($_SESSION["id"])) {
     <title>Reportes</title>
     <link rel="stylesheet" href="estilos/barstyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
     
@@ -29,32 +30,32 @@ if (empty($_SESSION["id"])) {
             </div>
             <button class="boton">
                 <ion-icon name="add-outline"></ion-icon>
-                <span>Create reporte</span>
+                <span>Crear reporte</span>
             </button>
         </div>
 
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a id="inbox" href="#">
+                    <a class="seccion" id="inbox" href="#">
                         <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
                 </li>
                 <li>
-                    <a href="calif.php">
+                    <a class="seccion" href="calif.php">
                         <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Calificaciones</span>
                     </a>
                 </li>
                 <li>
-                    <a href="grupo.php">
+                    <a class="seccion" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
                         <span>Grupo</span>
                     </a>
                 </li>
                 <li>
-                    <a href="biblioteca.php">
+                    <a class="seccion" href="biblioteca.php">
                         <ion-icon title="Biblioteca Virtual" name="book-outline"></ion-icon>
                         <span>Bilbioteca Virtual</span>
                     </a>
@@ -72,8 +73,8 @@ if (empty($_SESSION["id"])) {
                             <h2>¡ALERTA!</h2>
                             <p>¿Estás seguro de cerrar sesión?</p>
                             <div class="btn">
-                                <a href="../controlador_cerrar.php">Cerrar sesión</a>
-                                <label for="btn-modal"><h4>Cancelar</h4></label>
+                                <a class="btn btn-success" href="../controlador_cerrar.php">Cerrar sesión</a>
+                                <label class="btn btn-danger" for="btn-modal">Cancelar</label>
                             </div>
                         </div>
                         <label for="btn-modal" class="cerrar-modal"></label>
