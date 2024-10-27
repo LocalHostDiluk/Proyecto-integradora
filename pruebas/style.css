@@ -8,6 +8,10 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
 }
+h1{
+    text-align:center;
+    
+}
 
 .gallery {
     display: flex;
@@ -18,24 +22,30 @@ body {
     max-width: 1200px;
 }
 
+/* Estilo de cada imagen */
 .image {
     position: relative;
-    width: 250px;
-    overflow: hidden;
-    border-radius: 10px;
+    width: 250px; /* Ajusta este tamaño según sea necesario */
+    height: 250px; /* Asegúrate de que el contenedor tenga una altura definida */
+    overflow: hidden; /* Asegura que la imagen no sobresalga */
+    border-radius: 10px; /* Bordes redondeados */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo de la imagen */
 .image img {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease;
+    width: 100%; /* Ajusta la imagen al ancho del contenedor */
+    height: 100%; /* Ajusta la imagen a la altura del contenedor */
+    object-fit: cover; /* Cubre completamente el área del contenedor */
+    transition: transform 0.3s ease; /* Transición suave para el efecto hover */
 }
 
+/* Efecto hover en la imagen */
 .image:hover img {
-    transform: scale(1.1);
+    transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
 }
 
+/* Estilo para los enlaces dentro de la imagen */
 .image a {
-    display: block;
+    display: block; /* Hace que el enlace ocupe todo el espacio de la imagen */
 }
