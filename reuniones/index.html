@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección de reportes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Reportes</h1>
+
+        <div class="note-card add-note" onclick="showNoteForm()">
+            <span>+ Añadir reporte</span>
+        </div>
+
+        <div id="notesContainer" class="notes-grid"></div>
+    </div>
+
+    
+    <div id="noteForm" class="note-form hidden">
+        <h2>Crear Nuevo reporte</h2>
+        <label for="creatorId">ID del Creador (Oculto):</label>
+        <input type="hidden" id="creatorId" value="12345">
+
+        <label for="recipientId">ID del Destinatario (Oculto):</label>
+        <input type="hidden" id="recipientId" value="67890">
+
+        <label for="noteTitle">Título:</label>
+        <input type="text" id="noteTitle"> 
+
+        <label for="noteDescription">Descripción:</label>
+        <textarea id="noteDescription"></textarea>
+
+        <button onclick="saveNote()">Guardar Nota</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
