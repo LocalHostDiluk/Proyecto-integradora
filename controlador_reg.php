@@ -10,8 +10,8 @@ if(!empty($_POST["btnregistrar"])) {
         $direccion = $_POST["direccion"];
         $usuario = $_POST["user"];
         $pass = $_POST["passreg"];
-        $sql = $conn -> query("INSERT INTO tutor (nombreTutor,apellidoTutor,telefonoTutor,direccionTutor,fecha_creacionTutor) VALUES ('$nombre','$apellido','$telefono','$direccion','date()')");
-        $sql2 = $conn -> query("INSERT INTO usuario (nombreUsuario,contraseña,rol,estatus_usuario,fecha_creacion) VALUES ('$usuario','$pass','Tutor','Activo','date()')");
+        $sql = $conn -> query("INSERT INTO tutor (nombreTutor,apellidoTutor,telefonoTutor,direccionTutor,fecha_creacionTutor,estatus_tutor) VALUES ('$nombre','$apellido','$telefono','$direccion',NOW(),'Activo')");
+        $sql2 = $conn -> query("INSERT INTO usuario (correoUsuario,contraseña,rol,estatus_usuario,fecha_creacion) VALUES ('$usuario','$pass','Tutor','Activo',NOW())");
         if ($sql and $sql2) {
             echo '<script>alert("Usuario registrado correctamente")</script>';
         } else {

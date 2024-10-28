@@ -4,14 +4,31 @@ if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
 }
+
+$id = $_GET['idAlumno'];
+$int = (int)$id;
+
+if (isset($_POST['submit'])) {
+    include "../conexion.php";
+    $desc = $_POST['desc'];
+    $estatus = $_POST['estatus'];
+    $sql = "UPDATE alumno SET descripcionAlumno = '$desc', estatus_alumno = '$estatus' WHERE idAlumno = $int";
+    if (mysqli_query($conn, $sql)) {
+        header("Location: grupo.php?msg=Alumno actualizado correctamente");
+    } else {
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
+    mysqli_close($conn);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca</title>
-    <link rel="stylesheet" href="estilos/biblio.css">
+    <title>Grupo</title>
+    <link rel="stylesheet" href="estilos/grupo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -49,13 +66,13 @@ if (empty($_SESSION["id"])) {
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" href="grupo.php">
+                    <a class="seccion" id="inbox" href="#">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
                         <span>Grupo</span>
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" id="inbox" href="#">
+                    <a class="seccion" href="biblioteca.php">
                         <ion-icon title="Biblioteca Virtual" name="book-outline"></ion-icon>
                         <span>Bilbioteca Virtual</span>
                     </a>
@@ -120,74 +137,57 @@ if (empty($_SESSION["id"])) {
 
     </div>
 
-    <main>
-    <div class="gallery">
-        <div class="image">
-            <a href="biblio/civica.html">
-                <img src="image/civica.jpg" alt="Imagen Cívica">
-            </a>
+    <main class="container">
+        <div class="text-center mb-4">
+            <h3>Editar información alumno</h3>
+            <p class="text-muted">Edita la información del alumno</p>
         </div>
-        <div class="image">
-            <a href="biblio/ciencias.html">
-                <img src="image/biologia.jpg" alt="Imagen Ciencias">
-            </a>
+
+        <?php
+        include "../conexion.php";
+        $id = $_GET['idAlumno'];
+        $int = (int)$id;
+        $sql = "SELECT * FROM alumno WHERE idAlumno = $int";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        ?>
+
+        <div class="container d-flex justify-content-center">
+            <form action="" method="post" style="width:50vw; min-width:300px;">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label style="font-weight: bold;" for="nm" class="form-label">Nombre:</label>
+                        <?php echo $row['nombreAlumno']?>
+                    </div>
+                    <div class="col">
+                        <label style="font-weight: bold;" for="ap" class="form-label">Apellido:</label>
+                        <?php echo $row['apellidoAlumno']?>
+                    </div>
+                    <div class="col">
+                        <label style="font-weight: bold;" for="ap" class="form-label">Estatus:</label>
+                        <?php echo $row['estatus_alumno']?>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="desc" class="form-label">Cambia la descripción del alumno</label>
+                    <input id="desc" type="text" class="form-control" name="desc" value="<?php echo $row['descripcionAlumno'] ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="grupo" class="form-label">Estatus del alumno</label><br>
+                    <select name="estatus" class="form-select">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button style="margin-right: 10px;" class="btn btn-primary" name="submit" type="submit">Actualizar</button>
+                    <a href="grupo.php" class="btn btn-danger">Cancelar</a>
+                </div>
+            </form>
         </div>
-        <div class="image">
-            <a href="biblio/intermedia.html">
-                <img src="image/inglesz.jpg" alt="Imagen Inglés">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/matematicas.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/espain.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/historia.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/geografia.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/artes.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/ciencias.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/libro.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/diccio.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/historia.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/geografia.html">
-                <img src="image/geografia.jpg" alt="Imagen Geografía">
-            </a>
-        </div>
-    </div>
     </main>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

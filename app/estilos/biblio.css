@@ -401,6 +401,11 @@ main.min-main{
 
 /*----------------> Biblioteca*/
 
+h1{
+    text-align:center;
+    
+}
+
 .gallery {
     display: flex;
     flex-wrap: wrap;
@@ -410,24 +415,30 @@ main.min-main{
     max-width: 1200px;
 }
 
+/* Estilo de cada imagen */
 .image {
     position: relative;
     width: 250px;
+    height: 250px;
     overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo de la imagen */
 .image img {
-    width: 100%;
-    height: auto;
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
     transition: transform 0.3s ease;
 }
 
+/* Efecto hover en la imagen */
 .image:hover img {
     transform: scale(1.1);
 }
 
+/* Estilo para los enlaces dentro de la imagen */
 .image a {
     display: block;
 }

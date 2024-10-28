@@ -7,7 +7,7 @@ if (!empty($_POST["btningresar"])){
     } else {
         $usuario = $_POST["correolog"];
         $pass = $_POST["passlog"];
-        $sql = $conn -> query("SELECT * FROM usuario WHERE correoUsuario = '$usuario' AND contraseña = '$pass'");
+        $sql = $conn -> query("SELECT * FROM usuario WHERE correoUsuario = '$usuario' AND contraseña = '$pass' AND estatus_usuario = 'Activo'");
 
         if ($datos = $sql -> fetch_object()){
             $_SESSION["id"] = $datos -> idUsuario;

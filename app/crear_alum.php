@@ -1,17 +1,39 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
 }
+
+if (isset($_POST["submit"])) {
+    require_once "../conexion.php";
+    $nombre = $_POST["nombre"];
+    $apellido = $_POST["apellido"];
+    $desc = $_POST["desc"];
+    $id = "SELECT idGrupo FROM grupo WHERE idTutor= $_SESSION[id]";
+    $int = (int)$id;
+    $sql = "INSERT INTO alumno (nombreAlumno, apellidoAlumno, descripcionAlumno, idGrupo) VALUES ('$nombre', '$apellido', '$desc', $int)";
+    
+    $result = mysqli_query($conn,$sql);
+    if ($result) {
+        header("Location: grupo.php?msg=Alumno registrado exitosamente");
+    } else {
+        echo "Error al registrar alumno" . $mysqli->error($conn);
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca</title>
-    <link rel="stylesheet" href="estilos/biblio.css">
+    <title>Grupo</title>
+    <link rel="stylesheet" href="estilos/grupo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -49,13 +71,13 @@ if (empty($_SESSION["id"])) {
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" href="grupo.php">
+                    <a class="seccion" id="inbox" href="#">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
                         <span>Grupo</span>
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" id="inbox" href="#">
+                    <a class="seccion" href="biblioteca.php">
                         <ion-icon title="Biblioteca Virtual" name="book-outline"></ion-icon>
                         <span>Bilbioteca Virtual</span>
                     </a>
@@ -120,74 +142,36 @@ if (empty($_SESSION["id"])) {
 
     </div>
 
-    <main>
-    <div class="gallery">
-        <div class="image">
-            <a href="biblio/civica.html">
-                <img src="image/civica.jpg" alt="Imagen Cívica">
-            </a>
+    <main class="container">
+        <div class="text-center mb-4">
+            <h3>Registrar alumno</h3>
+            <p class="text-muted">Completa para registrar al alumno</p>
         </div>
-        <div class="image">
-            <a href="biblio/ciencias.html">
-                <img src="image/biologia.jpg" alt="Imagen Ciencias">
-            </a>
+
+        <div class="container d-flex justify-content-center">
+            <form action="" method="post" style="width:50vw; min-width:300px;">
+                <div class="row">
+                    <div class="col">
+                        <label for="nm" class="form-label">Nombre</label>
+                        <input id="nm" type="text" class="form-control" name="nombre" placeholder="Nombre alumno">
+                    </div>
+                    <div class="col">
+                        <label for="ap" class="form-label">Apellido</label>
+                        <input id="ap" type="text" class="form-control" name="apellido" placeholder="Apellido alumno">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="desc" class="form-label">Descripcion</label>
+                    <input id="desc" type="text" class="form-control" name="desc" placeholder="Descipción del alumno">
+                </div>
+
+                <div>
+                    <button class="btn btn-success" name="submit" type="submit">Añadir</button>
+                    <a href="grupo.php" class="btn btn-danger">Cancelar</a>
+                </div>
+            </form>
         </div>
-        <div class="image">
-            <a href="biblio/intermedia.html">
-                <img src="image/inglesz.jpg" alt="Imagen Inglés">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/matematicas.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/espain.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/historia.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/geografia.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/artes.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/ciencias.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/libro.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/diccio.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/historia.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/geografia.html">
-                <img src="image/geografia.jpg" alt="Imagen Geografía">
-            </a>
-        </div>
-    </div>
     </main>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

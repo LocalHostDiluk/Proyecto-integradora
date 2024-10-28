@@ -120,12 +120,107 @@ if (empty($_SESSION["id"])) {
 
     </div>
 
-    <main>
-
+    <main class="cont">
+        <?php
+        if (isset($_GET['msg'])) {
+            $msg = $_GET['msg'];
+            echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+            '.$msg.'
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+        }
+        ?>
+        <?php
+        include "../conexion.php";
+        $sql = "SELECT alumno.idAlumno, alumno.nombreAlumno, alumno.apellidoAlumno, alumno.estatus_alumno, grupo.grado_grupo FROM alumno INNER JOIN grupo ON alumno.idGrupo = grupo.idGrupo AND grupo.idTutor = $_SESSION[id]";
+        $resultado = $conn->query($sql);
+        if ($resultado->num_rows > 0){
+            ?>
+            <a href="crear_alum.php" class="btn btn-secondary mb-3">Nuevo</a>
+    
+            <table class="table table-hover table-responsive text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Grupo</th>
+                        <th>Estatus</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($resultado)) {
+                        ?>
+                        <tr>
+                            <th><?php echo $row['idAlumno']?></th>
+                            <td><?php echo $row['nombreAlumno']?></td>
+                            <td><?php echo $row['apellidoAlumno']?></td>
+                            <td><?php echo $row['grado_grupo']?></td>
+                            <td><?php echo $row['estatus_alumno']?></td>
+                            <td>
+                                <a class="link-dark" style="text-decoration: none; cursor:pointer;" data-bs-id="<?php $row['idAlumno']?>" data-bs-toggle="modal" data-bs-target="#modalinfo">
+                                    <i title="Información" class="fa-solid fa-circle-info fs-5 me-3"></i>
+                                </a>
+                                <a style="text-decoration: none;" href="editar_alum.php?idAlumno=<?php echo $row['idAlumno']?>" class="link-dark">
+                                    <i title="Editar" class="fa-solid fa-pen-to-square fs-5 me-3"></i>
+                                </a>
+                                <a style="text-decoration: none" class="link-dark" href="borrar_alum.php?idAlumno=<?php echo$row['idAlumno']?>">
+                                    <i title="Eliminar" class="fa-solid fa-trash fs-5"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <?php
+        }else{
+            ?>
+            <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+                <symbol id="check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </symbol>
+                <symbol id="info-fill" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </symbol>
+                <symbol id="exclamation-triangle-fill" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </symbol>
+            </svg>
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                <div>
+                <h2 style="text-align: center;">No cuentas con alumnos y/o grupo asignado</h2>
+                </div>
+            </div>
+            <div>
+                <h2 style="text-align: center;" class="alert alert-primary" role="alert">Revisa con dirección para solucionar la situación</h2>
+            </div>
+            <?php
+        }
+        ?>
     </main>
+
+    <?php
+    include "info_alum.php";
+    ?>
+
+    <script>
+        let infomodal = document.getElementById('modalinfo');
+        infomodal.addEventListener('shown.bs.modal', event =>{
+            let button = event.relatedTarget;
+            let id = button.getAttribute('data-bs-id');
+
+            let inputid = infomodal.querySelector('.modal-body #id');
+        })
+
+    </script>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="../app/script.js"></script>
 
 </body>
