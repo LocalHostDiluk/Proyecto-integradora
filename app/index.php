@@ -25,6 +25,7 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <div class="barra-lateral">
+
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
@@ -34,67 +35,6 @@ if (empty($_SESSION["id"])) {
                 <ion-icon name="add-outline"></ion-icon>
                 <span>Crear reporte</span>
             </button>
-
-            <div lass="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="reporteModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="reporteModalLabel">Crear nuevo reporte</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group mb-3">
-                                <label for="titulo">Título</label>
-                                <input type="text" id="titulo" class="form-control" required>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="descripcion">Descripción</label>
-                                <textarea id="descripcion" class="form-control" required></textarea>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="fecha">Fecha</label>
-                                <input type="date" id="fecha" class="form-control" required>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="hora">Hora</label>
-                                <input type="time" id="hora" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" onclick="guardarReporte()">Crear reporte</button>
-                            <script>
-                                function guardarReporte() {
-                                    const titulo = document.getElementById('titulo').value;
-                                    const descripcion = document.getElementById('descripcion').value;
-                                    const fecha = document.getElementById('fecha').value;
-                                    const hora = document.getElementById('hora').value;
-
-                                    if( titulo && descripcion && fecha && hora ) {
-                                        fetch('crear_reporte.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({ titulo, descripcion, fecha, hora })}).then(response => response.json()).then(data => {
-                                                if (data.success) {
-                                                    Swal.fire('¡Reporte creado!', '', 'success');
-                                                    document.getElementById('reporteModal').modal('hide');
-                                                } else {
-                                                    Swal.fire('¡Error al crear el reporte!', '', 'error');
-                                                }
-                                            }).catch(error => {
-                                                Swal.fire('¡Error al crear el reporte!', '', 'error');
-                                        })
-                                    } else{
-                                        Swal.fire('¡Todos los campos son requeridos!', '', 'error');
-                                    }
-                                }
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <nav class="navegacion">
@@ -204,17 +144,25 @@ if (empty($_SESSION["id"])) {
         ?>
 
         <div class="container">
-            <h1>Reportes</h1>
+            <h1 style="text-align: center;">Reportes</h1>
+            <hr>
             <div id="notesContainer" class="notes-grid">
                 <?php if (!empty($reuniones)): ?>
                     <?php foreach ($reuniones as $reunion): ?>
                         <div class="note-card">
-                            <h3><?php echo htmlspecialchars($reunion['descripcion']); ?></h3>
-                            <p>Fecha: <?php echo htmlspecialchars($reunion['fecha']); ?></p>
-                            <p>Hora: <?php echo htmlspecialchars($reunion['hora']); ?></p>
-                            <p>Lugar: <?php echo htmlspecialchars($reunion['lugar']); ?></p>
-                            <p>ID Alumno: <?php echo htmlspecialchars($reunion['idAlumno']); ?></p>
-                            <p>ID Tutor: <?php echo htmlspecialchars($reunion['idTutor']); ?></p>
+                            <h3 style="text-transform:uppercase; text-align: center;"><?php echo htmlspecialchars($reunion['titulo']); ?></h3>
+                            <p><b>Descripcion:</b> <?php echo htmlspecialchars($reunion['descripcion']); ?></p>
+                            <p><b>Fecha:</b> <?php echo htmlspecialchars($reunion['fecha']); ?></p>
+                            <p><b>Hora:</b> <?php echo htmlspecialchars($reunion['hora']); ?></p>
+                            <hr style="width: 80%; margin:auto;">
+                            <div style="margin-top: 10px;">
+                                <a style="text-decoration: none;" href="editar_alum.php?idAlumno=<?php echo $row['idAlumno']?>" class="link-dark">
+                                    <i title="Editar" class="fa-solid fa-pen-to-square fs-5 me-3"></i>
+                                </a>
+                                <a style="text-decoration: none; cursor:pointer;" class="link-dark" onclick="alerta_eliminar(<?php echo $row['idAlumno']; ?>)">
+                                    <fs-5 title="Eliminar" class="fa-solid fa-circle-xmark fs-5"></i>
+                                </a>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>

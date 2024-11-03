@@ -405,6 +405,7 @@ main.min-main{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    overflow: hidden;
 }
 
 .note-card {
@@ -413,6 +414,7 @@ main.min-main{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
 }
 
 .note-card:hover {

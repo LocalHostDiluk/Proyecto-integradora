@@ -25,10 +25,11 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <div class="barra-lateral">
+        
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
-                <span></span>
+                <span>Esc. Sec 4</span>
             </div>
             <button class="boton">
                 <ion-icon name="add-outline"></ion-icon>
