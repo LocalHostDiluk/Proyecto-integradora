@@ -13,9 +13,31 @@ if(!empty($_POST["btnregistrar"])) {
         $sql = $conn -> query("INSERT INTO tutor (nombreTutor,apellidoTutor,telefonoTutor,direccionTutor,fecha_creacionTutor,estatus_tutor) VALUES ('$nombre','$apellido','$telefono','$direccion',NOW(),'Activo')");
         $sql2 = $conn -> query("INSERT INTO usuario (correoUsuario,contraseña,rol,estatus_usuario,fecha_creacion) VALUES ('$usuario','$pass','Tutor','Activo',NOW())");
         if ($sql and $sql2) {
-            echo '<script>alert("Usuario registrado correctamente")</script>';
+            ?>
+
+            <script>
+                Swal.fire({
+                    title: '¡Registro exitoso!',
+                    text: 'Ahora puedes iniciar sesión',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>
+
+            <?php
         } else {
-            echo '<script>alert("Error al registrar usuario")</script>';
+            ?>
+
+            <script>
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'No se pudo registrar, intente de nuevo',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>
+
+            <?php
         }
     }
 }

@@ -16,7 +16,16 @@ if (!empty($_POST["btningresar"])){
 
             header("Location: ../app/index.php");
         }else {
-            echo '<h4 style="color: red;">No tienes acceso, verifica tu información</h4>';
+            ?>
+            <script>
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Usuario o contraseña incorrectos',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>
+            <?php
         }
     }
     

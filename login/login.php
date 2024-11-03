@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../images/favicon.png" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <title>Login Page</title>
     <link rel="stylesheet" href="styles.css">
@@ -85,7 +86,6 @@
         </div>
 
     </div>
-
 
     <script src="script.js"></script>
     <script src="login.js" type="text/javascript"></script>

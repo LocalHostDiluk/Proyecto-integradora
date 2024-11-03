@@ -51,7 +51,7 @@ if (empty($_SESSION["id"])) {
                 <li>
                     <a class="seccion" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
-                        <span>Grupo</span>
+                        <span>Alumnos</span>
                     </a>
                 </li>
                 <li>
@@ -121,7 +121,7 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <main>
-    <div class="gallery">
+        <div class="gallery">
         <div class="image">
             <a href="biblio/civica.html">
                 <img src="image/civica.jpg" alt="Imagen Cívica">
@@ -153,41 +153,41 @@ if (empty($_SESSION["id"])) {
             </a>
         </div>
         <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/geografia.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/artes.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/ciencias.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/matematicas.html">
-                <img src="image/libro.jpg" alt="Imagen Matemáticas">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/español.html">
-                <img src="image/diccio.jpg" alt="Imagen Español">
-            </a>
-        </div>
-        <div class="image">
-            <a href="biblio/historia.html">
-                <img src="image/historia.jpg" alt="Imagen Historia">
-            </a>
-        </div>
-        <div class="image">
             <a href="biblio/geografia.html">
-                <img src="image/geografia.jpg" alt="Imagen Geografía">
+                <img src="image/geografia.jpg" alt="Imagen geografia">
             </a>
         </div>
-    </div>
+        <div class="image">
+            <a href="biblio/artes.html">
+                <img src="image/artes.jpg" alt="Imagen artes">
+            </a>
+        </div>
+        <div class="image">
+            <a href="biblio/biologia-ciencia.html">
+                <img src="image/ciencias.jpg" alt="Imagen biologia">
+            </a>
+        </div>
+        <div class="image">
+            <a href="biblio/general.html">
+                <img src="image/libro.jpg" alt="Imagen General">
+            </a>
+        </div>
+        <div class="image">
+            <a href="biblio/diccionario.html">
+                <img src="image/diccio.jpg" alt="Imagen diccionario">
+            </a>
+        </div>
+        <div class="image">
+            <a href="biblio/tecnologias.html">
+                <img src="image/tec.jpg" alt="Imagen tecnologias">
+            </a>
+        </div>
+        <div class="image">
+            <a href="biblio/deportes.html">
+                <img src="image/thb.jpg" alt="Imagen deportes">
+            </a>
+        </div>
+        </div>
     </main>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

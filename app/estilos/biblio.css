@@ -415,7 +415,6 @@ h1{
     max-width: 1200px;
 }
 
-/* Estilo de cada imagen */
 .image {
     position: relative;
     width: 250px;
@@ -439,7 +438,7 @@ h1{
 }
 
 /* Estilo para los enlaces dentro de la imagen */
-.image a {
+.image .linkbiblio {
     display: block;
 }
 

@@ -12,6 +12,8 @@ if (empty($_SESSION["id"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes</title>
     <link rel="stylesheet" href="estilos/barstyle.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -28,10 +30,71 @@ if (empty($_SESSION["id"])) {
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
                 <span></span>
             </div>
-            <button class="boton">
+            <button data-bs-toggle="modal" data-bs-target="#reporteModal" class="boton">
                 <ion-icon name="add-outline"></ion-icon>
                 <span>Crear reporte</span>
             </button>
+
+            <div lass="modal fade" id="reporteModal" tabindex="-1" aria-labelledby="reporteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reporteModalLabel">Crear nuevo reporte</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group mb-3">
+                                <label for="titulo">Título</label>
+                                <input type="text" id="titulo" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="descripcion">Descripción</label>
+                                <textarea id="descripcion" class="form-control" required></textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="fecha">Fecha</label>
+                                <input type="date" id="fecha" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="hora">Hora</label>
+                                <input type="time" id="hora" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="guardarReporte()">Crear reporte</button>
+                            <script>
+                                function guardarReporte() {
+                                    const titulo = document.getElementById('titulo').value;
+                                    const descripcion = document.getElementById('descripcion').value;
+                                    const fecha = document.getElementById('fecha').value;
+                                    const hora = document.getElementById('hora').value;
+
+                                    if( titulo && descripcion && fecha && hora ) {
+                                        fetch('crear_reporte.php', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({ titulo, descripcion, fecha, hora })}).then(response => response.json()).then(data => {
+                                                if (data.success) {
+                                                    Swal.fire('¡Reporte creado!', '', 'success');
+                                                    document.getElementById('reporteModal').modal('hide');
+                                                } else {
+                                                    Swal.fire('¡Error al crear el reporte!', '', 'error');
+                                                }
+                                            }).catch(error => {
+                                                Swal.fire('¡Error al crear el reporte!', '', 'error');
+                                        })
+                                    } else{
+                                        Swal.fire('¡Todos los campos son requeridos!', '', 'error');
+                                    }
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <nav class="navegacion">
@@ -51,7 +114,7 @@ if (empty($_SESSION["id"])) {
                 <li>
                     <a class="seccion" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
-                        <span>Grupo</span>
+                        <span>Alumnos</span>
                     </a>
                 </li>
                 <li>
@@ -121,7 +184,44 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <main>
+        <?php
+        include "../conexion.php";
+        $idTutor = $_SESSION["id"];
+        $sql = "SELECT * FROM reuniones WHERE idTutor = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idTutor);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
+        $reuniones = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $reuniones[] = $row;
+            }
+        } else {
+            $mensaje = "No tienes reuniones registradas.";
+        }
+        ?>
+
+        <div class="container">
+            <h1>Reportes</h1>
+            <div id="notesContainer" class="notes-grid">
+                <?php if (!empty($reuniones)): ?>
+                    <?php foreach ($reuniones as $reunion): ?>
+                        <div class="note-card">
+                            <h3><?php echo htmlspecialchars($reunion['descripcion']); ?></h3>
+                            <p>Fecha: <?php echo htmlspecialchars($reunion['fecha']); ?></p>
+                            <p>Hora: <?php echo htmlspecialchars($reunion['hora']); ?></p>
+                            <p>Lugar: <?php echo htmlspecialchars($reunion['lugar']); ?></p>
+                            <p>ID Alumno: <?php echo htmlspecialchars($reunion['idAlumno']); ?></p>
+                            <p>ID Tutor: <?php echo htmlspecialchars($reunion['idTutor']); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p><?php echo $mensaje; ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
     </main>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

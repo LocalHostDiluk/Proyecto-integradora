@@ -51,7 +51,7 @@ if (empty($_SESSION["id"])) {
                 <li>
                     <a class="seccion" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
-                        <span>Grupo</span>
+                        <span>Alumnos</span>
                     </a>
                 </li>
                 <li>

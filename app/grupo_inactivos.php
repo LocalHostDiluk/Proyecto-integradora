@@ -10,7 +10,7 @@ if (empty($_SESSION["id"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumnos</title>
+    <title>Alumnos inactivos</title>
     <link rel="stylesheet" href="estilos/grupo.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -25,6 +25,7 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <div class="barra-lateral">
+
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
@@ -133,12 +134,11 @@ if (empty($_SESSION["id"])) {
         ?>
         <?php
         include "../conexion.php";
-        $sql = "SELECT alumno.idAlumno, alumno.nombreAlumno, alumno.apellidoAlumno, alumno.estatus_alumno, grupo.grado_grupo FROM alumno INNER JOIN grupo ON alumno.idGrupo = grupo.idGrupo AND alumno.estatus_alumno = 'Activo' AND grupo.idTutor = $_SESSION[id]";
+        $sql = "SELECT alumno.idAlumno, alumno.nombreAlumno, alumno.apellidoAlumno, alumno.estatus_alumno, grupo.grado_grupo FROM alumno INNER JOIN grupo ON alumno.idGrupo = grupo.idGrupo AND alumno.estatus_alumno = 'Inactivo' AND grupo.idTutor = $_SESSION[id]";
         $resultado = $conn->query($sql);
         if ($resultado->num_rows > 0){
             ?>
-            <a href="crear_alum.php" class="btn btn-info mb-3">Nuevo</a>
-            <a href="grupo_inactivos.php" class="btn btn-dark mb-3">Ver inactivos</a>
+            <a href="grupo.php" class="btn btn-dark mb-3">Volver</a>
     
             <table class="table table-hover table-responsive text-center">
                 <thead class="table-dark">
@@ -235,7 +235,7 @@ if (empty($_SESSION["id"])) {
                 success: function(response){
                     Swal.fire({
                         title: "¡Hecho!",
-                        text: "El alumno ha sido desactivado",
+                        text: "El alumno ha sido eliminado",
                         icon: "success",
                         confirmButtonText: "Continuar"
                     }).then((result) => {

@@ -1,3 +1,10 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+</html>
+
 <?php
 session_start();
 if (empty($_SESSION["id"])) {
@@ -13,10 +20,24 @@ if (isset($_POST['submit'])) {
     $desc = $_POST['desc'];
     $estatus = $_POST['estatus'];
     $sql = "UPDATE alumno SET descripcionAlumno = '$desc', estatus_alumno = '$estatus' WHERE idAlumno = $int";
-    if (mysqli_query($conn, $sql)) {
-        header("Location: grupo.php?msg=Alumno actualizado correctamente");
-    } else {
-        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    if (!empty($desc)) {
+        
+        if (mysqli_query($conn, $sql)) {
+            header("Location: grupo.php?msg=Alumno actualizado correctamente");
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
+    }else{
+        ?>
+        <script>
+            Swal.fire({
+                title: '¡Alerta!',
+                text: 'Completa todos los campos',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        </script>
+        <?php
     }
     mysqli_close($conn);
 }
@@ -27,7 +48,7 @@ if (isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grupo</title>
+    <title>Edicion de alumno</title>
     <link rel="stylesheet" href="estilos/grupo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">

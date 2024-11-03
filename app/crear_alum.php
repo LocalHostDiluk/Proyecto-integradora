@@ -1,5 +1,11 @@
-<?php
+<html>
+    <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+</html>
 
+<?php
 use function PHPSTORM_META\type;
 
 session_start();
@@ -14,26 +20,44 @@ if (isset($_POST["submit"])) {
     $apellido = $_POST["apellido"];
     $desc = $_POST["desc"];
     $id = "SELECT idGrupo FROM grupo WHERE idTutor= $_SESSION[id]";
-    $int = (int)$id;
-    $sql = "INSERT INTO alumno (nombreAlumno, apellidoAlumno, descripcionAlumno, idGrupo) VALUES ('$nombre', '$apellido', '$desc', $int)";
-    
-    $result = mysqli_query($conn,$sql);
-    if ($result) {
-        header("Location: grupo.php?msg=Alumno registrado exitosamente");
+    $result = mysqli_query($conn, $id);
+    $row = mysqli_fetch_assoc($result);
+    $int = (int)$row["idGrupo"];
+
+    if (empty($nombre) || empty($apellido) || empty($desc)) {
+        ?>
+        <script>
+                Swal.fire({
+                    title: '¡Alerta!',
+                    text: 'Completa todos los campos',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>
+        <?php
     } else {
-        echo "Error al registrar alumno" . $mysqli->error($conn);
+        $sql = "INSERT INTO alumno (idAlumno, nombreAlumno, apellidoAlumno, descripcionAlumno, idGrupo) VALUES (null,'$nombre', '$apellido', '$desc', $int)";
+        
+        $result = mysqli_query($conn,$sql);
+        if ($result) {
+            header("Location: grupo.php?msg=Alumno registrado exitosamente");
+        } else {
+            echo "Error al registrar alumno" . $mysqli->error($conn);
+        
+        } 
+        
     }
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grupo</title>
+    <title>Registro de alumno</title>
     <link rel="stylesheet" href="estilos/grupo.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
@@ -163,7 +187,7 @@ if (isset($_POST["submit"])) {
 
                 <div class="mb-3">
                     <label for="desc" class="form-label">Descripcion</label>
-                    <input id="desc" type="text" class="form-control" name="desc" placeholder="Descipción del alumno">
+                    <textarea id="desc" type="text" class="form-control" name="desc" placeholder="Descipción del alumno (enfermedades, carácter, etc)"></textarea>
                 </div>
 
                 <div>
