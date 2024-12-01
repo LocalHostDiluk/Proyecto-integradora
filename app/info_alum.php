@@ -4,6 +4,13 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
 <?php
+    if (empty($_SESSION["id"])) {
+        header("Location: ../login/login.php");
+        exit();
+    } else if ($_SESSION["rol"] != "Tutor") {
+        header("Location: ../admin/inicio.php");
+        exit();
+    }
     include '../conexion.php';
     $idAlumno = $row['idAlumno'];
     $sql = "SELECT * FROM alumno WHERE idAlumno = '$idAlumno'";

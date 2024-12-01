@@ -9,21 +9,21 @@ session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
-} else if ($_SESSION["rol"] != "Tutor") {
-    header("Location: ../admin/inicio.php");
+} else if ($_SESSION["rol"] != "Administrador") {
+    header("Location: ../app/index.php");
     exit();
 }
 
 $id = $_POST["id"];
 $int = (int)$id;
 if (!empty($int)) {
-    $sql = "UPDATE alumno SET estatus_alumno= 'Inactivo' WHERE idAlumno = $int";
+    $sql = "DELETE FROM admin WHERE idAdmin = $int";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
-        header("Location: grupo.php?msg=Alumno desactivado correctamente");
+        header("Location: gestionar_usuario.php");
     } else {
-        header("Location: grupo.php?msg=Error al desactivar el alumno");
+        header("Location: gestionar_usuario.php");
     }
     ?>
     <script>
@@ -33,4 +33,3 @@ if (!empty($int)) {
     </script>
     <?php
 }
-

@@ -3,6 +3,9 @@ session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
+} else if ($_SESSION["rol"] != "Tutor") {
+    header("Location: ../admin/inicio.php");
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -10,12 +13,12 @@ if (empty($_SESSION["id"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alumnos</title>
     <link rel="stylesheet" href="estilos/grupo.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Alumnos</title>
 </head>
 <body>
     
@@ -31,28 +34,24 @@ if (empty($_SESSION["id"])) {
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
                 <span>Esc. Sec 4</span>
             </div>
-            <button class="boton">
-                <ion-icon name="add-outline"></ion-icon>
-                <span>Crear reporte</span>
-            </button>
         </div>
 
         <nav class="navegacion">
             <ul>
                 <li>
                     <a class="seccion" href="index.php">
-                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
                 </li>
                 <li>
                     <a class="seccion" href="calif.php">
-                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
-                        <span>Calificaciones</span>
+                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <span> Filtrado de Grupos</span>
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" id="inbox" href="#">
+                    <a class="seccion" id="inbox" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
                         <span>Alumnos</span>
                     </a>
@@ -89,17 +88,6 @@ if (empty($_SESSION["id"])) {
         <div>
             <div class="linea"></div>
 
-            <div class="modo-oscuro">
-                <div class="info">
-                    <ion-icon name="moon-outline"></ion-icon>
-                    <span>Modo Oscuro</span>
-                </div>
-                <div class="switch">
-                    <div class="base">
-                        <div class="circulo"></div>
-                    </div>
-                </div>
-            </div>
     
             <div class="usuario">
                 <div class="info-usuario">
@@ -111,7 +99,6 @@ if (empty($_SESSION["id"])) {
                             ?>
                         </span>
                         <span class="email">
-                            Rol: 
                             <?php
                             echo $_SESSION["rol"];
                             ?>
@@ -139,7 +126,9 @@ if (empty($_SESSION["id"])) {
         if ($resultado->num_rows > 0){
             ?>
             <a href="crear_alum.php" class="btn btn-info mb-3">Nuevo</a>
-            <a href="grupo_inactivos.php" class="btn btn-dark mb-3">Ver inactivos</a>
+            <a id="ver-activos" class="btn btn-success mb-3" style="cursor:pointer;">Ver activos</a>
+            <a id="ver-inactivos" class="btn btn-dark mb-3" style="cursor:pointer;">Ver inactivos</a>
+
     
             <table class="table table-hover table-responsive text-center">
                 <thead class="table-dark">
@@ -182,6 +171,7 @@ if (empty($_SESSION["id"])) {
                     ?>
                 </tbody>
             </table>
+            
             <?php
         }else{
             ?>
@@ -211,6 +201,44 @@ if (empty($_SESSION["id"])) {
     </main>
 
     <script>
+
+        function alerta_activar(codigo){
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Estás a punto de activar al alumno",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, continuar"
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    activar_php(codigo);
+                }
+            });
+        }
+
+        function activar_php(codigo){
+            parametros = {id: codigo};
+            $.ajax({
+                data: parametros,
+                url: 'activar_alum.php',
+                type: 'POST',
+                success: function(response){
+                    Swal.fire({
+                        title: "¡Hecho!",
+                        text: "El alumno ha sido desactivado",
+                        icon: "success",
+                        confirmButtonText: "Continuar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        }
+
         function alerta_eliminar(codigo){
             Swal.fire({
                 title: "¿Estás seguro?",
@@ -247,7 +275,66 @@ if (empty($_SESSION["id"])) {
                 }
             })
         }
-    </script>
+        
+    $(document).ready(function() {
+        // Función para cargar los alumnos inactivos
+        $("#ver-inactivos").on("click", function() {
+            $.ajax({
+                url: 'grupo_inactivos.php', // Archivo PHP que obtiene alumnos inactivos
+                type: 'GET',
+                success: function(data) {
+                    $("tbody").html(data); // Reemplaza el contenido de la tabla con la respuesta
+                },
+                error: function() {
+                    alert("Error al cargar los alumnos inactivos.");
+                }
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        // Initially set "Ver activos" as active
+        $("#ver-activos").addClass("btn-success").removeClass("btn-dark");
+        $("#ver-inactivos").addClass("btn-dark").removeClass("btn-success");
+
+        // Function to toggle active/inactive buttons
+        function toggleButtons(activeBtn, inactiveBtn) {
+            $(activeBtn).addClass("btn-success").removeClass("btn-dark");
+            $(inactiveBtn).addClass("btn-dark").removeClass("btn-success");
+        }
+
+        // Load active students
+        $("#ver-activos").on("click", function() {
+            toggleButtons("#ver-activos", "#ver-inactivos"); // Change button styles
+            $.ajax({
+                url: 'grupo_activos.php', // Fetch active students
+                type: 'GET',
+                success: function(data) {
+                    $("tbody").html(data); // Update table content
+                },
+                error: function() {
+                    alert("Error al cargar los alumnos activos.");
+                }
+            });
+        });
+
+        // Load inactive students
+        $("#ver-inactivos").on("click", function() {
+            toggleButtons("#ver-inactivos", "#ver-activos"); // Change button styles
+            $.ajax({
+                url: 'grupo_inactivos.php', // Fetch inactive students
+                type: 'GET',
+                success: function(data) {
+                    $("tbody").html(data); // Update table content
+                },
+                error: function() {
+                    alert("Error al cargar los alumnos inactivos.");
+                }
+            });
+        });
+    });
+</script>
+
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

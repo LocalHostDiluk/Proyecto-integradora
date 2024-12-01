@@ -12,6 +12,9 @@ session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
+} else if ($_SESSION["rol"] != "Tutor") {
+    header("Location: ../admin/inicio.php");
+    exit();
 }
 
 if (isset($_POST["submit"])) {
@@ -72,32 +75,28 @@ if (isset($_POST["submit"])) {
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
-                <span></span>
+                <span>Esc Sec 4</span>
             </div>
-            <button class="boton">
-                <ion-icon name="add-outline"></ion-icon>
-                <span>Crear reporte</span>
-            </button>
         </div>
 
         <nav class="navegacion">
             <ul>
                 <li>
                     <a class="seccion" href="index.php">
-                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
                 </li>
                 <li>
                     <a class="seccion" href="calif.php">
-                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
-                        <span>Calificaciones</span>
+                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <span>Filtrado de Grupos</span>
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" id="inbox" href="#">
+                    <a class="seccion" id="inbox" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
-                        <span>Grupo</span>
+                        <span>Alumnos</span>
                     </a>
                 </li>
                 <li>
@@ -154,7 +153,6 @@ if (isset($_POST["submit"])) {
                             ?>
                         </span>
                         <span class="email">
-                            Rol: 
                             <?php
                             echo $_SESSION["rol"];
                             ?>

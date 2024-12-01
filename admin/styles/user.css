@@ -52,7 +52,7 @@
 body{
     height: 100vh;
     width: 100%;
-    background-color: white;
+    background-color: black;
 }
 
 /*-----------------Menu*/
@@ -146,7 +146,7 @@ body{
 }
 
 .barra-lateral .boton:hover{
-    cursor: pointer;
+    cursor: crosshair;
     background-color: red;
     color: var(--color-menu-hover-texto);
 }
@@ -399,6 +399,76 @@ main.min-main{
     margin-left: 80px;
 }
 
+/* ------------- reportes */
+
+.notes-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    overflow: hidden;
+}
+
+.note-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.note-card h3 {
+    font-size: 1.5rem;
+    color: #000;
+    margin-bottom: 10px;
+}
+
+.note-card p {
+    font-size: 1rem;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+/* Modal estilos */
+
+.modal-content {
+    background-color: var(--color-barra-lateral);
+    border-radius: 10px;
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--color-linea);
+}
+
+.modal-title {
+    color: black;
+}
+
+
+.form-control {
+    border: 1px solid var(--color-linea);
+    color: var(--color-texto);
+}
+
+.btn-primary {
+    background-color: var(--color-boton);
+    border-color: var(--color-boton);
+}
+
+.btn-primary:hover {
+    background-color: red;
+    border-color: red;
+}
+
+.btn-secondary {
+    background-color: var(--color-linea);
+    border-color: var(--color-linea);
+}
 
 
 /*------------------> Responsive*/
@@ -431,4 +501,324 @@ main.min-main{
         margin-left: 0;
     }
     
+}
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-primary ion-icon {
+    font-size: 20px;
+}
+.perfil-imagen { 
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    cursor: pointer; 
+}
+
+.usuario { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal h3{
+    text-align: center;
+}
+
+/* Contenido del modal centrado */
+.modal-content {
+    cursor: default;
+    background-color: #fff;
+    border-radius: 8px;
+    color: black;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-f{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animación para el modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Botón para cerrar el modal */
+.cerrar-modal {
+    display: inline-block;
+    margin-top: 15px;
+    color: #555;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.cerrar-modal:hover {
+    background-color: #f1f1f1;
+}
+
+.container-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+input#btn-modal:checked ~ .container-modal {
+    display: flex;
+}
+
+.container-modal .content-modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 400px;
+}
+
+.container-modal h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.container-modal p {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.container-modal .btn {
+    display: flex;
+    justify-content: space-around;
+}
+
+.container-modal .btn a,
+.container-modal .btn label {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.container-modal .btn .btn-success {
+    background-color: #27ae60;
+    transition: background-color 0.3s;
+}
+
+.container-modal .btn .btn-success:hover {
+    background-color: #2ecc71;
+}
+
+.container-modal .btn .btn-danger {
+    background-color: #e74c3c;
+    transition: background-color 0.3s;
+}
+
+.container-modal .btn .btn-danger:hover {
+    background-color: #c0392b;
+}
+
+main {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+main .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+main h1 {
+    font-size: 36px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+main h3 {
+    font-size: 24px;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+form {
+    margin-bottom: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+form button {
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #2ecc71;
+}
+
+@media (max-width: 768px) {
+    .barra-lateral {
+        width: 200px;
+    }
+
+    main {
+        margin-left: 210px;
+    }
+
+    form div {
+        display: flex;
+        flex-direction: column;
+    }
+}
+.menu{
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: var(--color-boton);
+    color: var(--color-boton-texto);
+    right: 15px;
+    top: 15px;
+    z-index: 100;
+}
+/* Estilo de la información del usuario en la barra lateral */
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal h3{
+    text-align: center;
+}
+
+/* Contenido del modal centrado */
+.modal-content {
+    cursor: default;
+    background-color: #fff;
+    border-radius: 8px;
+    color: black;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-f{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animación para el modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Botón para cerrar el modal */
+.cerrar-modal {
+    display: inline-block;
+    margin-top: 15px;
+    color: #555;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.cerrar-modal:hover {
+    background-color: #f1f1f1;
 }

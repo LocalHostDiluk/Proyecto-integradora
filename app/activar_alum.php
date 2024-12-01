@@ -17,13 +17,13 @@ if (empty($_SESSION["id"])) {
 $id = $_POST["id"];
 $int = (int)$id;
 if (!empty($int)) {
-    $sql = "UPDATE alumno SET estatus_alumno= 'Inactivo' WHERE idAlumno = $int";
+    $sql = "UPDATE alumno SET estatus_alumno= 'Activo' WHERE idAlumno = $int";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
-        header("Location: grupo.php?msg=Alumno desactivado correctamente");
+        header("Location: grupo.php?msg=Alumno activado correctamente");
     } else {
-        header("Location: grupo.php?msg=Error al desactivar el alumno");
+        header("Location: grupo.php?msg=Error al activar el alumno");
     }
     ?>
     <script>
@@ -33,4 +33,3 @@ if (!empty($int)) {
     </script>
     <?php
 }
-

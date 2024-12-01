@@ -146,7 +146,7 @@ body{
 }
 
 .barra-lateral .boton:hover{
-    cursor: crosshair;
+    cursor: pointer;
     background-color: red;
     color: var(--color-menu-hover-texto);
 }

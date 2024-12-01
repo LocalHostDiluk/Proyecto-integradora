@@ -3,6 +3,9 @@ session_start();
 if (empty($_SESSION["id"])) {
     header("Location: ../login/login.php");
     exit();
+} else if ($_SESSION["rol"] != "Tutor") {
+    header("Location: ../admin/inicio.php");
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -16,6 +19,7 @@ if (empty($_SESSION["id"])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
 </head>
 <body>
     
@@ -25,30 +29,25 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <div class="barra-lateral">
-
+        
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
-                <span></span>
+                <span>Esc. Sec 4</span>
             </div>
-            <button data-bs-toggle="modal" data-bs-target="#reporteModal" class="boton">
-                <ion-icon name="add-outline"></ion-icon>
-                <span>Crear reporte</span>
-            </button>
         </div>
-
         <nav class="navegacion">
             <ul>
                 <li>
                     <a class="seccion" id="inbox" href="#">
-                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
                 </li>
                 <li>
                     <a class="seccion" href="calif.php">
-                        <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
-                        <span>Calificaciones</span>
+                        <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
+                        <span>Filtrado de Grupos</span>
                     </a>
                 </li>
                 <li>
@@ -82,25 +81,15 @@ if (empty($_SESSION["id"])) {
                         </div>
                         <label for="btn-modal" class="cerrar-modal"></label>
                     </div>
+                    
                 </li>
             </ul>
         </nav>
-
+        
         <div>
             <div class="linea"></div>
 
-            <div class="modo-oscuro">
-                <div class="info">
-                    <ion-icon name="moon-outline"></ion-icon>
-                    <span>Modo Oscuro</span>
-                </div>
-                <div class="switch">
-                    <div class="base">
-                        <div class="circulo"></div>
-                    </div>
-                </div>
-            </div>
-    
+           
             <div class="usuario">
                 <div class="info-usuario">
                     <div class="nombre-email">
@@ -111,7 +100,6 @@ if (empty($_SESSION["id"])) {
                             ?>
                         </span>
                         <span class="email">
-                            Rol: 
                             <?php
                             echo $_SESSION["rol"];
                             ?>
@@ -120,61 +108,423 @@ if (empty($_SESSION["id"])) {
                 </div>
             </div>
         </div>
-
     </div>
 
     <main>
-        <?php
-        include "../conexion.php";
-        $idTutor = $_SESSION["id"];
-        $sql = "SELECT * FROM reuniones WHERE idTutor = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $idTutor);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        
+    <?php
+    include "../conexion.php";
+    $idTutor = $_SESSION["id"];
+    $sql = "SELECT * FROM reuniones WHERE idTutor = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $idTutor);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        $reuniones = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $reuniones[] = $row;
-            }
-        } else {
-            $mensaje = "No tienes reuniones registradas.";
+    $reuniones = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $reuniones[] = $row;
         }
-        ?>
+    } else {
+        $mensaje = "No tienes reuniones registradas.";
+    }
+     // Procesar cambios en el formulario
+     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Cambiar correo o contraseña
+        if (!empty($_POST['correo']) || !empty($_POST['contraseña'])) {
+            $nuevoCorreo = !empty($_POST['correo']) ? $_POST['correo'] : $usuario['correoUsuario'];
+            $nuevaContraseña = !empty($_POST['contraseña']) ? $_POST['contraseña'] : $usuario['contraseña'];
+
+            $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
+            $stmt = $conn->prepare($sqlActualizar);
+            $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
+            $stmt->execute();
+        }
+
+        // Cambiar imagen de perfil
+        if (isset($_FILES["imagen_perfil"]) && $_FILES["imagen_perfil"]["error"] == 0) {
+            $imagenPerfil = $_FILES["imagen_perfil"];
+            $extensionesPermitidas = ["jpg", "jpeg", "png"];
+            $ext = strtolower(pathinfo($imagenPerfil["name"], PATHINFO_EXTENSION));
+            $mime = mime_content_type($imagenPerfil["tmp_name"]);
+
+            if (in_array($ext, $extensionesPermitidas) && ($mime === "image/jpeg" || $mime === "image/png")) {
+                if ($imagenPerfil["size"] <= 2 * 1024 * 1024) {
+                    $nombreImagen = uniqid() . "." . $ext;
+                    $rutaDestino = __DIR__ . "/../uploads/" . $nombreImagen;
+
+                    if (move_uploaded_file($imagenPerfil["tmp_name"], $rutaDestino)) {
+                        // Eliminar imagen anterior si existe
+                        if (!empty($usuario['imagenPerfil']) && file_exists(__DIR__ . "/../uploads/" . $usuario['imagenPerfil'])) {
+                            unlink(__DIR__ . "/../uploads/" . $usuario['imagenPerfil']);
+                        }
+
+                        // Actualizar base de datos
+                        $sqlActualizarImagen = "UPDATE usuario SET imagenPerfil = ? WHERE idUsuario = ?";
+                        $stmt = $conn->prepare($sqlActualizarImagen);
+                        $stmt->bind_param("si", $nombreImagen, $idUsuario);
+                        $stmt->execute();
+
+                        echo "<script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Imagen actualizada!',
+                                text: 'Tu imagen de perfil se ha actualizado correctamente.',
+                                confirmButtonText: 'Aceptar'
+                            }).then(() => {
+                                window.location = 'inicio.php';
+                            });
+                        </script>";
+                    }
+                } else {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'El tamaño de la imagen no debe superar los 2MB.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    </script>";
+                }
+            } else {
+                echo "<script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Solo se permiten imágenes JPG, JPEG o PNG.',
+                        confirmButtonText: 'Aceptar'
+                    });
+                </script>";
+            }
+        }
+    }
+    if (!empty($_POST['contraseña'])) {
+        $nuevaContraseña = $_POST['contraseña'];
+        $confirmarContraseña = $_POST['confirmar_contraseña'];
+    
+        if ($nuevaContraseña !== $confirmarContraseña) {
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Las contraseñas no coinciden.',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>";
+            exit;
+        }
+    }
+    ?>
+        <h1 class="text-center my-4">Reportes</h1>
+
+        <!-- Botón para abrir el modal de crear reporte -->
+        <div class="text-center mb-4">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearReunionModal">
+                <ion-icon name="add-outline"></ion-icon>
+                Crear reunion
+            </button>
+        </div>
 
         <div class="container">
-            <h1 style="text-align: center;">Reportes</h1>
-            <hr>
-            <div id="notesContainer" class="notes-grid">
                 <?php if (!empty($reuniones)): ?>
                     <?php foreach ($reuniones as $reunion): ?>
                         <div class="note-card">
-                            <h3 style="text-transform:uppercase; text-align: center;"><?php echo htmlspecialchars($reunion['titulo']); ?></h3>
-                            <p><b>Descripcion:</b> <?php echo htmlspecialchars($reunion['descripcion']); ?></p>
+                            <h3 style="text-transform:uppercase; text-align: center;">
+                                <?php echo htmlspecialchars($reunion['titulo']); ?>
+                            </h3>
+                            <p><b>Descripción:</b> <?php echo htmlspecialchars($reunion['descripcion']); ?></p>
                             <p><b>Fecha:</b> <?php echo htmlspecialchars($reunion['fecha']); ?></p>
                             <p><b>Hora:</b> <?php echo htmlspecialchars($reunion['hora']); ?></p>
                             <hr style="width: 80%; margin:auto;">
                             <div style="margin-top: 10px;">
-                                <a style="text-decoration: none;" href="editar_alum.php?idAlumno=<?php echo $row['idAlumno']?>" class="link-dark">
+                                <!-- Botón para mostrar más información -->
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#infoModal<?php echo $reunion['idReunion']; ?>" class="link-dark">
+                                    <i title="Más Información" class="fa-solid fa-info-circle fs-5 me-3"></i>
+                                </a>
+                                <!-- Botón Editar -->
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#editarModal<?php echo $reunion['idReunion']; ?>" class="link-dark">
                                     <i title="Editar" class="fa-solid fa-pen-to-square fs-5 me-3"></i>
                                 </a>
-                                <a style="text-decoration: none; cursor:pointer;" class="link-dark" onclick="alerta_eliminar(<?php echo $row['idAlumno']; ?>)">
-                                    <fs-5 title="Eliminar" class="fa-solid fa-circle-xmark fs-5"></i>
+                                <!-- Botón Eliminar -->
+                                <a href="#" onclick="eliminarReunion(<?php echo $reunion['idReunion']; ?>)" class="link-dark">
+                                    <i title="Eliminar" class="fa-solid fa-circle-xmark fs-5"></i>
                                 </a>
                             </div>
                         </div>
+
+                        <!-- Modal para más información -->
+                        <div class="modal fade" id="infoModal<?php echo $reunion['idReunion']; ?>" tabindex="-1" aria-labelledby="infoModalLabel<?php echo $reunion['idReunion']; ?>" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="infoModalLabel<?php echo $reunion['idReunion']; ?>">Información de la Reunión</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><b>ID Reunión:</b> <?php echo htmlspecialchars($reunion['idReunion']); ?></p>
+                                        <p><b>Grupo:</b> <?php echo htmlspecialchars($reunion['idGrupo']); ?></p>
+                                        <p><b>Lugar:</b> <?php echo htmlspecialchars($reunion['lugar']); ?></p>
+                                        <p><b>Fecha:</b> <?php echo htmlspecialchars($reunion['fecha']); ?></p>
+                                        <p><b>Hora:</b> <?php echo htmlspecialchars($reunion['hora']); ?></p>
+                                        <p><b>Descripción:</b> <?php echo htmlspecialchars($reunion['descripcion']); ?></p>
+                                        <!-- Añadir otros campos según la base de datos -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal para Editar -->
+                        <div class="modal fade" id="editarModal<?php echo $reunion['idReunion']; ?>" tabindex="-1" aria-labelledby="editarModalLabel<?php echo $reunion['idReunion']; ?>" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarModalLabel<?php echo $reunion['idReunion']; ?>">Editar Reunión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="editar_reunion.php" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="idReunion" value="<?php echo $reunion['idReunion']; ?>">
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título</label>
+                        <input type="text" class="form-control" name="titulo" value="<?php echo htmlspecialchars($reunion['titulo']); ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" name="descripcion" required><?php echo htmlspecialchars($reunion['descripcion']); ?></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" name="fecha" value="<?php echo htmlspecialchars($reunion['fecha']); ?>" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hora" class="form-label">Hora</label>
+                        <input type="time" class="form-control" name="hora" value="<?php echo htmlspecialchars($reunion['hora']); ?>" readonly>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p><?php echo $mensaje; ?></p>
+                <p><?php echo $mensaje; ?></p>
                 <?php endif; ?>
             </div>
+
+        <!-- Modal para Crear Reunión -->
+        <div class="modal fade" id="crearReunionModal" tabindex="-1" aria-labelledby="crearReunionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearReunionModalLabel">Crear Nuevo Reporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="crearReunionForm" action="crear_reunion.php" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" name="fecha" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="hora" class="form-label">Hora</label>
+                        <input type="time" class="form-control" id="hora" name="hora" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lugar" class="form-label">Lugar</label>
+                        <input type="text" class="form-control" id="lugar" name="lugar" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="crearReunionBtn" type="submit" class="btn btn-primary" disabled>Crear Reunión</button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
+<div id="modal-ajustar-perfil" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Ajustes del Perfil</h3>
+        </div>
+        <div class="modal-body">
+            <form action="inicio.php" method="POST" enctype="multipart/form-data" id="form-ajustar-perfil">
+                <!-- Cambiar correo -->
+                <div class="form-group">
+                    <label for="correo">Usuario:</label>
+                    <input type="text" placeholder="Ingrese el nuevo usuario (opcional)" name="correo" id="correo" value="<?php echo htmlspecialchars($usuario['correoUsuario']); ?>">
+                </div>
+                <!-- Cambiar contraseña -->
+                <div class="form-group">
+                    <label for="contraseña">Nueva Contraseña:</label>
+                    <input type="password" placeholder="Ingrese la nueva contraseña (opcional)" name="contraseña" id="contraseña">
+                </div>
+                <div class="form-group">
+                    <label for="confirmar-contraseña">Confirmar Contraseña:</label>
+                    <input type="password" placeholder="Confirme la nueva contraseña" name="confirmar_contraseña" id="confirmar-contraseña">
+                </div>
+                <!-- Cambiar imagen -->
+                <div class="form-group">
+                    <label for="imagen-perfil">Subir nueva imagen:</label>
+                    <input type="file" name="imagen_perfil" id="imagen-perfil" accept="image/*">
+                </div>
+                <div class="modal-f">
+                    <button type="submit">Guardar Cambios</button>
+                </div>
+            </form>
+            <span class="cerrar-modal" id="cerrar-modal">Cerrar</span>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Al abrir el modal, establecer fecha y hora actuales
+    document.getElementById('crearReunionModal').addEventListener('shown.bs.modal', function () {
+        // Obtener la fecha actual y establecerla en el campo de fecha
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('fecha').value = today;
+
+        // Obtener la hora actual y establecerla en el campo de hora
+        var time = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('hora').value = time;
+    });
+</script>
+
+
+        <script>
+
+            function eliminarReunion(idReunion) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "No podrás revertir esta acción",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'eliminar_reunion.php?idReunion=' + idReunion;
+                    }
+                });
+            }
+
+            // Selección de elementos del formulario
+            const form = document.getElementById('crearReunionForm');
+            const inputs = form.querySelectorAll('input, textarea');
+            const submitButton = document.getElementById('crearReunionBtn');
+
+            // Verifica si todos los campos están llenos
+            function verificarCampos() {
+                const todosLlenos = Array.from(inputs).every(input => input.value.trim() !== '');
+                submitButton.disabled = !todosLlenos;
+                if (todosLlenos) {
+                    submitButton.classList.remove('btn-secondary');
+                    submitButton.classList.add('btn-primary');
+                } else {
+                    submitButton.classList.remove('btn-primary');
+                    submitButton.classList.add('btn-secondary');
+                }
+            }
+
+            // Escucha cambios en los campos del formulario
+            inputs.forEach(input => {
+                input.addEventListener('input', verificarCampos);
+            });
+        </script>
+
+        <style>
+            .note-card {
+                background: #AFEEEE; /* Color amarillo post-it */
+                box-shadow: 2px 4px 10px #fcb7af; /* Sombra suave */
+                border-radius: 12px;
+                padding: 20px 30px;
+                margin: 20px auto;
+                max-width: 800px; /* Ancho alargado */
+                font-family: 'Arial', sans-serif;
+                position: relative;
+                text-align: left; /* Alineación izquierda */
+                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            }
+
+            .note-card:before {
+                content: "";
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                width: 40px;
+                height: 40px;
+                background: #fff48f;
+                box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.15);
+                transform: rotate(45deg); /* Simula una esquina levantada */
+                border-top-right-radius: 10px;
+            }
+
+            .note-card:hover {
+                transform: rotate(0deg); /* Quita inclinación al hacer hover */
+                box-shadow: 4px 8px 15px rgba(0, 0, 0, 0.25); /* Aumenta la sombra */
+            }
+
+            .note-card h3 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+                color: #333;
+            }
+
+            .note-card p {
+                font-size: 1.2em;
+                color: #444;
+                margin-bottom: 10px;
+            }
+
+            .note-card hr {
+                border: 1px dashed #666;
+            }
+
+            .note-card .link-dark {
+                text-decoration: none;
+                font-weight: bold;
+                margin-right: 15px;
+            }
+
+            .note-card .link-dark:hover {
+                color: #ff8800;
+            }
+
+            /* Estilo para el botón deshabilitado */
+            .btn-secondary:disabled {
+                background-color: #d6d6d6;
+                border-color: #d6d6d6;
+                color: #8c8c8c;
+                cursor: not-allowed;
+            }
+        </style>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </main>
 
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script src="../app/script.js"></script>
+
 
 </body>
 </html>
+ <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="../app/script.js"></script>
