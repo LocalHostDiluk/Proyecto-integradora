@@ -468,6 +468,7 @@ main.min-main{
 .btn-secondary {
     background-color: var(--color-linea);
     border-color: var(--color-linea);
+    padding-top: 50px;
 }
 
 
@@ -507,6 +508,7 @@ main.min-main{
     border: none;
     border-radius: 10px;
     padding: 10px 20px;
+    margin-bottom: 15px;
     font-size: 16px;
     display: inline-flex;
     align-items: center;
@@ -529,16 +531,18 @@ main.min-main{
 }
 
 .modal {
+    display: none;
     position: fixed;
-    top: 0;
+    z-index: 1000;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: none;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
 .modal h3{
@@ -547,15 +551,13 @@ main.min-main{
 
 /* Contenido del modal centrado */
 .modal-content {
-    cursor: default;
-    background-color: #fff;
-    border-radius: 8px;
-    color: black;
+    background-color: #fefefe;
     padding: 20px;
+    border-radius: 5px;
     width: 90%;
-    max-width: 400px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.3s ease-in-out;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
 }
 
 .modal-f{
@@ -758,16 +760,17 @@ form button:hover {
 
 
 .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    z-index: 1000; /* Asegúrate de que el modal esté encima de otros elementos */
+    animation: fadeIn 0.3s ease-in-out; /* Animación al aparecer */
 }
 
 .modal h3{
@@ -776,15 +779,13 @@ form button:hover {
 
 /* Contenido del modal centrado */
 .modal-content {
-    cursor: default;
-    background-color: #fff;
-    border-radius: 8px;
-    color: black;
+    background-color: var(--color-barra-lateral);
     padding: 20px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.3s ease-in-out;
+    border-radius: 10px;
+    width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+    max-width: 500px; /* Ancho máximo del modal */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: scaleUp 0.3s ease-in-out; /* Animación al mostrar contenido */
 }
 
 .modal-f{
@@ -797,28 +798,44 @@ form button:hover {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: scale(0.9);
     }
     to {
         opacity: 1;
-        transform: scale(1);
     }
 }
 
 /* Botón para cerrar el modal */
 .cerrar-modal {
-    display: inline-block;
-    margin-top: 15px;
-    color: #555;
     cursor: pointer;
-    text-align: center;
+    color: #555;
     font-size: 14px;
     font-weight: bold;
-    padding: 10px 15px;
-    border-radius: 5px;
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
     transition: background-color 0.2s ease;
 }
 
 .cerrar-modal:hover {
     background-color: #f1f1f1;
+}
+
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Asegúrate de que el modal ocupe toda la pantalla */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+}
+
+.modal-content {
+    background-color: white; /* Color de fondo del contenido del modal */
+    padding: 20px;
+    border-radius: 5px;
+    /* Puedes agregar más estilos aquí */
 }

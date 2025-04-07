@@ -66,7 +66,7 @@ if (isset($_POST["submit"])) {
 </head>
 <body>
     
-    <div class="menu">
+<div class="menu">
         <ion-icon name="menu-outline"></ion-icon>
         <ion-icon name="close-outline"></ion-icon>
     </div>
@@ -75,14 +75,20 @@ if (isset($_POST["submit"])) {
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
-                <span>Esc Sec 4</span>
+                <span>Esc. Sec 4</span>
             </div>
         </div>
-
+        
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a class="seccion" href="index.php">
+                    <a class="seccion" href="inicio.php">
+                        <ion-icon title="Inicio" name="clipboard-outline"></ion-icon>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="seccion"  href="index.php">
                         <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
@@ -124,46 +130,61 @@ if (isset($_POST["submit"])) {
                         </div>
                         <label for="btn-modal" class="cerrar-modal"></label>
                     </div>
+                    
                 </li>
             </ul>
         </nav>
-
+        
         <div>
             <div class="linea"></div>
 
-            <div class="modo-oscuro">
-                <div class="info">
-                    <ion-icon name="moon-outline"></ion-icon>
-                    <span>Modo Oscuro</span>
-                </div>
-                <div class="switch">
-                    <div class="base">
-                        <div class="circulo"></div>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="usuario">
-                <div class="info-usuario">
-                    <div class="nombre-email">
-                        <span class="nombre">
-                            Usuario: 
-                            <?php
-                            echo $_SESSION["correoUsuario"];
-                            ?>
-                        </span>
-                        <span class="email">
-                            <?php
-                            echo $_SESSION["rol"];
-                            ?>
-                        </span>
-                    </div>
-                </div>
+            <div class="usuario-contenido">
+    <div class="imagen-perfil" onclick="document.getElementById('modal-perfil').style.display='flex'">
+        <img src="ruta/de/imagen/perfil/<?php echo $_SESSION['imagenPerfil'] ?? 'default.png'; ?>" alt="Imagen de Perfil">
+    </div>
+    <div class="usuario">
+        <div class="info-usuario">
+            <div class="nombre-email">
+                <span class="nombre">
+                    Usuario: <?php echo $_SESSION["correoUsuario"]; ?>
+                </span>
+                <span class="email">
+                    <?php echo $_SESSION["rol"]; ?>
+                </span>
             </div>
         </div>
-
+    </div>
+</div>
+        </div>
     </div>
 
+    <!-- Modal para actualizar perfil -->
+    <div id="modal-perfil" class="modal"">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('modal-perfil').style.display='none'">&times;</span>
+            <h2>Actualizar Perfil</h2>
+            <form action="actualizar_perfil.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="correo">Correo</label>
+                    <input type="text" id="correo" name="correo" value="<?php echo $_SESSION['correoUsuario']; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm-password">
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Cambiar Imagen de Perfil</label>
+                    <input type="file" id="imagen" name="imagen" accept="image/*">
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    
     <main class="container">
         <div class="text-center mb-4">
             <h3>Registrar alumno</h3>

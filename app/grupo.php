@@ -1,12 +1,16 @@
 <?php
-session_start();
-if (empty($_SESSION["id"])) {
-    header("Location: ../login/login.php");
-    exit();
-} else if ($_SESSION["rol"] != "Tutor") {
-    header("Location: ../admin/inicio.php");
-    exit();
-}
+    session_start();
+    if (empty($_SESSION["id"])) {
+        header("Location: ../login/login.php");
+        exit();
+    } else if ($_SESSION["rol"] != "Tutor") {
+        header("Location: ../admin/inicio.php");
+        exit();
+    }
+
+    include "../conexion.php";
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,24 +26,29 @@ if (empty($_SESSION["id"])) {
 </head>
 <body>
     
-    <div class="menu">
+<div class="menu">
         <ion-icon name="menu-outline"></ion-icon>
         <ion-icon name="close-outline"></ion-icon>
     </div>
 
     <div class="barra-lateral">
-        
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
                 <span>Esc. Sec 4</span>
             </div>
         </div>
-
+        
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a class="seccion" href="index.php">
+                    <a class="seccion" href="inicio.php">
+                        <ion-icon title="Inicio" name="clipboard-outline"></ion-icon>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="seccion"  href="index.php">
                         <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
@@ -47,7 +56,7 @@ if (empty($_SESSION["id"])) {
                 <li>
                     <a class="seccion" href="calif.php">
                         <ion-icon title="Reportes" name="document-text-outline"></ion-icon>
-                        <span> Filtrado de Grupos</span>
+                        <span>Filtrado de Grupos</span>
                     </a>
                 </li>
                 <li>
@@ -81,33 +90,59 @@ if (empty($_SESSION["id"])) {
                         </div>
                         <label for="btn-modal" class="cerrar-modal"></label>
                     </div>
+                    
                 </li>
             </ul>
         </nav>
-
+        
         <div>
             <div class="linea"></div>
 
-    
-            <div class="usuario">
-                <div class="info-usuario">
-                    <div class="nombre-email">
-                        <span class="nombre">
-                            Usuario: 
-                            <?php
-                            echo $_SESSION["correoUsuario"];
-                            ?>
-                        </span>
-                        <span class="email">
-                            <?php
-                            echo $_SESSION["rol"];
-                            ?>
-                        </span>
-                    </div>
-                </div>
+            <div class="usuario-contenido">
+    <div class="imagen-perfil" onclick="document.getElementById('modal-perfil').style.display='flex'">
+        <img src="ruta/de/imagen/perfil/<?php echo $_SESSION['imagenPerfil'] ?? 'default.png'; ?>" alt="Imagen de Perfil">
+    </div>
+    <div class="usuario">
+        <div class="info-usuario">
+            <div class="nombre-email">
+                <span class="nombre">
+                    Usuario: <?php echo $_SESSION["correoUsuario"]; ?>
+                </span>
+                <span class="email">
+                    <?php echo $_SESSION["rol"]; ?>
+                </span>
             </div>
         </div>
+    </div>
+</div>
+        </div>
+    </div>
 
+    <!-- Modal para actualizar perfil -->
+    <div id="modal-perfil" class="modal"">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('modal-perfil').style.display='none'">&times;</span>
+            <h2>Actualizar Perfil</h2>
+            <form action="actualizar_perfil.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="correo">Correo</label>
+                    <input type="text" id="correo" name="correo" value="<?php echo $_SESSION['correoUsuario']; ?>">
+                </div>
+                <div class="form-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm-password">
+                </div>
+                <div class="form-group">
+                    <label for="imagen">Cambiar Imagen de Perfil</label>
+                    <input type="file" id="imagen" name="imagen" accept="image/*">
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
     </div>
 
     <main class="cont">
@@ -128,8 +163,8 @@ if (empty($_SESSION["id"])) {
             <a href="crear_alum.php" class="btn btn-info mb-3">Nuevo</a>
             <a id="ver-activos" class="btn btn-success mb-3" style="cursor:pointer;">Ver activos</a>
             <a id="ver-inactivos" class="btn btn-dark mb-3" style="cursor:pointer;">Ver inactivos</a>
-
-    
+            
+            
             <table class="table table-hover table-responsive text-center">
                 <thead class="table-dark">
                     <tr>
@@ -189,7 +224,7 @@ if (empty($_SESSION["id"])) {
             <div class="alert alert-danger d-flex align-items-center" role="alert">
                 <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
                 <div>
-                <h2 style="text-align: center;">No cuentas con alumnos y/o grupo asignado</h2>
+                    <h2 style="text-align: center;">No cuentas con alumnos y/o grupo asignado</h2>
                 </div>
             </div>
             <div>
@@ -199,8 +234,9 @@ if (empty($_SESSION["id"])) {
         }
         ?>
     </main>
-
+    
     <script>
+
 
         function alerta_activar(codigo){
             Swal.fire({
@@ -276,64 +312,64 @@ if (empty($_SESSION["id"])) {
             })
         }
         
-    $(document).ready(function() {
-        // Función para cargar los alumnos inactivos
-        $("#ver-inactivos").on("click", function() {
-            $.ajax({
-                url: 'grupo_inactivos.php', // Archivo PHP que obtiene alumnos inactivos
-                type: 'GET',
-                success: function(data) {
-                    $("tbody").html(data); // Reemplaza el contenido de la tabla con la respuesta
-                },
-                error: function() {
-                    alert("Error al cargar los alumnos inactivos.");
-                }
-            });
-        });
-    });
-
-    $(document).ready(function() {
-        // Initially set "Ver activos" as active
-        $("#ver-activos").addClass("btn-success").removeClass("btn-dark");
-        $("#ver-inactivos").addClass("btn-dark").removeClass("btn-success");
-
-        // Function to toggle active/inactive buttons
-        function toggleButtons(activeBtn, inactiveBtn) {
-            $(activeBtn).addClass("btn-success").removeClass("btn-dark");
-            $(inactiveBtn).addClass("btn-dark").removeClass("btn-success");
-        }
-
-        // Load active students
-        $("#ver-activos").on("click", function() {
-            toggleButtons("#ver-activos", "#ver-inactivos"); // Change button styles
-            $.ajax({
-                url: 'grupo_activos.php', // Fetch active students
-                type: 'GET',
-                success: function(data) {
-                    $("tbody").html(data); // Update table content
-                },
-                error: function() {
-                    alert("Error al cargar los alumnos activos.");
-                }
+        $(document).ready(function() {
+            // Función para cargar los alumnos inactivos
+            $("#ver-inactivos").on("click", function() {
+                $.ajax({
+                    url: 'grupo_inactivos.php', // Archivo PHP que obtiene alumnos inactivos
+                    type: 'GET',
+                    success: function(data) {
+                        $("tbody").html(data); // Reemplaza el contenido de la tabla con la respuesta
+                    },
+                    error: function() {
+                        alert("Error al cargar los alumnos inactivos.");
+                    }
+                });
             });
         });
 
-        // Load inactive students
-        $("#ver-inactivos").on("click", function() {
-            toggleButtons("#ver-inactivos", "#ver-activos"); // Change button styles
-            $.ajax({
-                url: 'grupo_inactivos.php', // Fetch inactive students
-                type: 'GET',
-                success: function(data) {
-                    $("tbody").html(data); // Update table content
-                },
-                error: function() {
-                    alert("Error al cargar los alumnos inactivos.");
-                }
+        $(document).ready(function() {
+            // Initially set "Ver activos" as active
+            $("#ver-activos").addClass("btn-success").removeClass("btn-dark");
+            $("#ver-inactivos").addClass("btn-dark").removeClass("btn-success");
+
+            // Function to toggle active/inactive buttons
+            function toggleButtons(activeBtn, inactiveBtn) {
+                $(activeBtn).addClass("btn-success").removeClass("btn-dark");
+                $(inactiveBtn).addClass("btn-dark").removeClass("btn-success");
+            }
+
+            // Load active students
+            $("#ver-activos").on("click", function() {
+                toggleButtons("#ver-activos", "#ver-inactivos"); // Change button styles
+                $.ajax({
+                    url: 'grupo_activos.php', // Fetch active students
+                    type: 'GET',
+                    success: function(data) {
+                        $("tbody").html(data); // Update table content
+                    },
+                    error: function() {
+                        alert("Error al cargar los alumnos activos.");
+                    }
+                });
+            });
+
+            // Load inactive students
+            $("#ver-inactivos").on("click", function() {
+                toggleButtons("#ver-inactivos", "#ver-activos"); // Change button styles
+                $.ajax({
+                    url: 'grupo_inactivos.php', // Fetch inactive students
+                    type: 'GET',
+                    success: function(data) {
+                        $("tbody").html(data); // Update table content
+                    },
+                    error: function() {
+                        alert("Error al cargar los alumnos inactivos.");
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

@@ -1,12 +1,15 @@
 <?php
-session_start();
-if (empty($_SESSION["id"])) {
-    header("Location: ../login/login.php");
-    exit();
-} else if ($_SESSION["rol"] != "Tutor") {
-    header("Location: ../admin/inicio.php");
-    exit();
-}
+    session_start();
+    if (empty($_SESSION["id"])) {
+        header("Location: ../login/login.php");
+        exit();
+    } else if ($_SESSION["rol"] != "Tutor") {
+        header("Location: ../admin/inicio.php");
+        exit();
+    }
+
+    include "../conexion.php";
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,17 +32,23 @@ if (empty($_SESSION["id"])) {
     </div>
 
     <div class="barra-lateral">
-        
         <div>
             <div class="nombre-pagina">
                 <ion-icon id="cloud" name="menu-outline"></ion-icon>
                 <span>Esc. Sec 4</span>
             </div>
         </div>
+        
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a class="seccion" id="inbox" href="#">
+                    <a class="seccion" href="inicio.php">
+                        <ion-icon title="Inicio" name="clipboard-outline"></ion-icon>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="seccion" id="inbox" href="index.php">
                         <ion-icon title="Calificaciones" name="clipboard-outline"></ion-icon>
                         <span>Reportes</span>
                     </a>
@@ -89,24 +98,23 @@ if (empty($_SESSION["id"])) {
         <div>
             <div class="linea"></div>
 
-           
-            <div class="usuario">
-                <div class="info-usuario">
-                    <div class="nombre-email">
-                        <span class="nombre">
-                            Usuario: 
-                            <?php
-                            echo $_SESSION["correoUsuario"];
-                            ?>
-                        </span>
-                        <span class="email">
-                            <?php
-                            echo $_SESSION["rol"];
-                            ?>
-                        </span>
-                    </div>
-                </div>
+            <div class="usuario-contenido">
+    <div class="imagen-perfil" onclick="document.getElementById('modal-perfil').style.display='flex'">
+        <img src="ruta/de/imagen/perfil/<?php echo $_SESSION['imagenPerfil'] ?? 'default.png'; ?>" alt="Imagen de Perfil">
+    </div>
+    <div class="usuario">
+        <div class="info-usuario">
+            <div class="nombre-email">
+                <span class="nombre">
+                    Usuario: <?php echo $_SESSION["correoUsuario"]; ?>
+                </span>
+                <span class="email">
+                    <?php echo $_SESSION["rol"]; ?>
+                </span>
             </div>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 
@@ -129,93 +137,7 @@ if (empty($_SESSION["id"])) {
     } else {
         $mensaje = "No tienes reuniones registradas.";
     }
-     // Procesar cambios en el formulario
-     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Cambiar correo o contraseña
-        if (!empty($_POST['correo']) || !empty($_POST['contraseña'])) {
-            $nuevoCorreo = !empty($_POST['correo']) ? $_POST['correo'] : $usuario['correoUsuario'];
-            $nuevaContraseña = !empty($_POST['contraseña']) ? $_POST['contraseña'] : $usuario['contraseña'];
-
-            $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
-            $stmt = $conn->prepare($sqlActualizar);
-            $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
-            $stmt->execute();
-        }
-
-        // Cambiar imagen de perfil
-        if (isset($_FILES["imagen_perfil"]) && $_FILES["imagen_perfil"]["error"] == 0) {
-            $imagenPerfil = $_FILES["imagen_perfil"];
-            $extensionesPermitidas = ["jpg", "jpeg", "png"];
-            $ext = strtolower(pathinfo($imagenPerfil["name"], PATHINFO_EXTENSION));
-            $mime = mime_content_type($imagenPerfil["tmp_name"]);
-
-            if (in_array($ext, $extensionesPermitidas) && ($mime === "image/jpeg" || $mime === "image/png")) {
-                if ($imagenPerfil["size"] <= 2 * 1024 * 1024) {
-                    $nombreImagen = uniqid() . "." . $ext;
-                    $rutaDestino = __DIR__ . "/../uploads/" . $nombreImagen;
-
-                    if (move_uploaded_file($imagenPerfil["tmp_name"], $rutaDestino)) {
-                        // Eliminar imagen anterior si existe
-                        if (!empty($usuario['imagenPerfil']) && file_exists(__DIR__ . "/../uploads/" . $usuario['imagenPerfil'])) {
-                            unlink(__DIR__ . "/../uploads/" . $usuario['imagenPerfil']);
-                        }
-
-                        // Actualizar base de datos
-                        $sqlActualizarImagen = "UPDATE usuario SET imagenPerfil = ? WHERE idUsuario = ?";
-                        $stmt = $conn->prepare($sqlActualizarImagen);
-                        $stmt->bind_param("si", $nombreImagen, $idUsuario);
-                        $stmt->execute();
-
-                        echo "<script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Imagen actualizada!',
-                                text: 'Tu imagen de perfil se ha actualizado correctamente.',
-                                confirmButtonText: 'Aceptar'
-                            }).then(() => {
-                                window.location = 'inicio.php';
-                            });
-                        </script>";
-                    }
-                } else {
-                    echo "<script>
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'El tamaño de la imagen no debe superar los 2MB.',
-                            confirmButtonText: 'Aceptar'
-                        });
-                    </script>";
-                }
-            } else {
-                echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Solo se permiten imágenes JPG, JPEG o PNG.',
-                        confirmButtonText: 'Aceptar'
-                    });
-                </script>";
-            }
-        }
-    }
-    if (!empty($_POST['contraseña'])) {
-        $nuevaContraseña = $_POST['contraseña'];
-        $confirmarContraseña = $_POST['confirmar_contraseña'];
-    
-        if ($nuevaContraseña !== $confirmarContraseña) {
-            echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Las contraseñas no coinciden.',
-                    confirmButtonText: 'Aceptar'
-                });
-            </script>";
-            exit;
-        }
-    }
-    ?>
+?>
         <h1 class="text-center my-4">Reportes</h1>
 
         <!-- Botón para abrir el modal de crear reporte -->
@@ -359,54 +281,46 @@ if (empty($_SESSION["id"])) {
         </div>
     </div>
 </div>
-<div id="modal-ajustar-perfil" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Ajustes del Perfil</h3>
-        </div>
-        <div class="modal-body">
-            <form action="inicio.php" method="POST" enctype="multipart/form-data" id="form-ajustar-perfil">
-                <!-- Cambiar correo -->
+
+    <!-- Modal para actualizar perfil -->
+    <div id="modal-perfil" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('modal-perfil').style.display='none'">&times;</span>
+            <h2>Actualizar Perfil</h2>
+            <form action="actualizar_perfil.php" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="correo">Usuario:</label>
-                    <input type="text" placeholder="Ingrese el nuevo usuario (opcional)" name="correo" id="correo" value="<?php echo htmlspecialchars($usuario['correoUsuario']); ?>">
-                </div>
-                <!-- Cambiar contraseña -->
-                <div class="form-group">
-                    <label for="contraseña">Nueva Contraseña:</label>
-                    <input type="password" placeholder="Ingrese la nueva contraseña (opcional)" name="contraseña" id="contraseña">
+                    <label for="correo">Correo</label>
+                    <input type="text" id="correo" name="correo" value="<?php echo $_SESSION['correoUsuario']; ?>">
                 </div>
                 <div class="form-group">
-                    <label for="confirmar-contraseña">Confirmar Contraseña:</label>
-                    <input type="password" placeholder="Confirme la nueva contraseña" name="confirmar_contraseña" id="confirmar-contraseña">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password">
                 </div>
-                <!-- Cambiar imagen -->
                 <div class="form-group">
-                    <label for="imagen-perfil">Subir nueva imagen:</label>
-                    <input type="file" name="imagen_perfil" id="imagen-perfil" accept="image/*">
+                    <label for="confirm-password">Confirmar Contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm-password">
                 </div>
-                <div class="modal-f">
-                    <button type="submit">Guardar Cambios</button>
+                <div class="form-group">
+                    <label for="imagen">Cambiar Imagen de Perfil</label>
+                    <input type="file" id="imagen" name="imagen" accept="image/*">
                 </div>
+                <button type="submit">Guardar Cambios</button>
             </form>
-            <span class="cerrar-modal" id="cerrar-modal">Cerrar</span>
         </div>
     </div>
-</div>
 
+    <script>
+        // Al abrir el modal, establecer fecha y hora actuales
+        document.getElementById('crearReunionModal').addEventListener('shown.bs.modal', function () {
+            // Obtener la fecha actual y establecerla en el campo de fecha
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('fecha').value = today;
 
-<script>
-    // Al abrir el modal, establecer fecha y hora actuales
-    document.getElementById('crearReunionModal').addEventListener('shown.bs.modal', function () {
-        // Obtener la fecha actual y establecerla en el campo de fecha
-        var today = new Date().toISOString().split('T')[0];
-        document.getElementById('fecha').value = today;
-
-        // Obtener la hora actual y establecerla en el campo de hora
-        var time = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('hora').value = time;
-    });
-</script>
+            // Obtener la hora actual y establecerla en el campo de hora
+            var time = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('hora').value = time;
+        });
+    </script>
 
 
         <script>

@@ -282,107 +282,9 @@ body{
     font-size: 13px;
 }
 
-/*-------------Ventana modal*/
 
-.boton-modal{
-    width: 100%;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    border-radius: 10px;
-    color: var(--color-texto-menu);
-}
 
-.boton-modal label{
-    width: 100%;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    border-radius: 10px;
-    color: var(--color-texto-menu);
-}
 
-.boton-modal label:hover{
-    background-color: var(--color-menu-hover);
-    color: var(--color-menu-hover-texto);
-    cursor: pointer;
-}
-
-.boton-modal:hover{
-    background-color: var(--color-menu-hover);
-    color: var(--color-menu-hover-texto);
-    cursor: pointer;
-}
-
-.boton-modal ion-icon{
-    min-width: 50px;
-    font-size: 20px;
-}
-
-#btn-modal{
-    display: none;
-}
-.container-modal{
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: 0; left: 0;
-    background-color: rgba(144, 148, 150, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-#btn-modal:checked ~ .container-modal{
-    display: flex;
-}
-
-.content-modal{
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    background-color: var(--color-barra-lateral);
-    border-radius: 10px;
-}
-
-.content-modal h2{
-    color: var(--color-texto);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.content-modal p{
-    padding: 15px 0;
-    border-top: 1px solid var(--color-linea);
-    border-bottom: 1px solid var(--color-linea);
-    text-align: center;
-    color: var(--color-texto-menu);
-}
-
-.content-modal .btn{
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-
-}
-
-.cerrar-modal{
-    width: 100%;
-    height: 100hv;
-    position: absolute;
-    top: 0; left: 0;
-    z-index: -1 ;
-}
-
-@media screen and (max-width: 800px){
-    .content-modal{
-        width: 90%;
-    }
-    
-}
 /*-------------main*/
 
 #inbox{
@@ -431,4 +333,142 @@ main.min-main{
         margin-left: 0;
     }
     
+}
+
+
+.usuario-contenido {
+    display: flex;
+    justify-content: space-between; /* Asegura que los elementos estén separados */
+    align-items: center;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.imagen-perfil {
+    width: 50px; /* Ajusta el tamaño del círculo según prefieras */
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    margin-left: auto; /* Mueve la imagen hacia la derecha */
+}
+
+.imagen-perfil img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%; /* Asegura que la imagen sea redonda */
+}
+
+.usuario .info-usuario {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente el contenido de texto */
+    align-items: flex-start; /* Alinea el texto a la izquierda */
+    gap: 5px; /* Espaciado entre las líneas del texto */
+}
+/* Modal */
+.modal {
+    display: none; /* Ocultar por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contenido del Modal */
+.modal-content {
+    background-color: #ffffff; /* Fondo blanco */
+    padding: 20px;
+    width: 90%; /* Ancho relativo para adaptarse a diferentes pantallas */
+    max-width: 400px; /* Ancho máximo para pantallas grandes */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Sombra suave */
+    animation: slideDown 0.3s ease-out; /* Animación de entrada */
+}
+
+/* Encabezado del Modal */
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* Botón para cerrar el modal */
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: #555555;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.modal-content .close:hover {
+    color: #ff0000;
+}
+
+/* Estilos del formulario dentro del modal */
+.modal-content .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-content .form-group label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.modal-content .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.modal-content .form-group input:focus {
+    border-color: #007bff;
+}
+
+/* Botón de enviar */
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3;
+}
+
+/* Animaciones */
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

@@ -1,63 +1,25 @@
-<html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    </head>
-</html>
-
 <?php
-session_start();
-if (empty($_SESSION["id"])) {
-    header("Location: ../login/login.php");
-    exit();
-} else if ($_SESSION["rol"] != "Tutor") {
-    header("Location: ../admin/inicio.php");
-    exit();
-}
-
-$id = $_GET['idAlumno'];
-$int = (int)$id;
-
-if (isset($_POST['submit'])) {
-    include "../conexion.php";
-    $desc = $_POST['desc'];
-    $estatus = $_POST['estatus'];
-    $sql = "UPDATE alumno SET descripcionAlumno = '$desc', estatus_alumno = '$estatus' WHERE idAlumno = $int";
-    if (!empty($desc)) {
-        
-        if (mysqli_query($conn, $sql)) {
-            header("Location: grupo.php?msg=Alumno actualizado correctamente");
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-        }
-    }else{
-        ?>
-        <script>
-            Swal.fire({
-                title: '¡Alerta!',
-                text: 'Completa todos los campos',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
-        </script>
-        <?php
+    session_start();
+    if (empty($_SESSION["id"])) {
+        header("Location: ../login/login.php");
+        exit();
+    } else if ($_SESSION["rol"] != "Tutor") {
+        header("Location: ../admin/inicio.php");
+        exit();
     }
-    mysqli_close($conn);
-}
-
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edicion de alumno</title>
-    <link rel="stylesheet" href="estilos/grupo.css">
+    <link rel="stylesheet" href="estilos/inicio.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Panel de Administración</title>
 </head>
 <body>
-    
+
 <div class="menu">
         <ion-icon name="menu-outline"></ion-icon>
         <ion-icon name="close-outline"></ion-icon>
@@ -74,7 +36,7 @@ if (isset($_POST['submit'])) {
         <nav class="navegacion">
             <ul>
                 <li>
-                    <a class="seccion" href="inicio.php">
+                    <a class="seccion" id="inbox" href="inicio.php">
                         <ion-icon title="Inicio" name="clipboard-outline"></ion-icon>
                         <span>Inicio</span>
                     </a>
@@ -92,7 +54,7 @@ if (isset($_POST['submit'])) {
                     </a>
                 </li>
                 <li>
-                    <a class="seccion" id="inbox" href="grupo.php">
+                    <a class="seccion" href="grupo.php">
                         <ion-icon title="Grupos" name="grid-outline"></ion-icon>
                         <span>Alumnos</span>
                     </a>
@@ -151,7 +113,7 @@ if (isset($_POST['submit'])) {
     </div>
 
     <!-- Modal para actualizar perfil -->
-    <div id="modal-perfil" class="modal"">
+    <div id="modal-perfil" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('modal-perfil').style.display='none'">&times;</span>
             <h2>Actualizar Perfil</h2>
@@ -177,62 +139,65 @@ if (isset($_POST['submit'])) {
         </div>
     </div>
 
-    <main class="container">
-        <div class="text-center mb-4">
-            <h3>Editar información alumno</h3>
-            <p class="text-muted">Edita la información del alumno</p>
+<div class="container">
+        <!-- Título del panel -->
+        <div class="title">
+            <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['usuario'] ?? 'Usuario'); ?> 👋</h1>
+            <p>Aquí puedes gestionar y visualizar toda la información del sistema de manera eficiente.</p>
         </div>
 
-        <?php
-        include "../conexion.php";
-        $id = $_GET['idAlumno'];
-        $int = (int)$id;
-        $sql = "SELECT * FROM alumno WHERE idAlumno = $int";
-        $result = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($result);
-        ?>
-
-        <div class="container d-flex justify-content-center">
-            <form action="" method="post" style="width:50vw; min-width:300px;">
-                <div class="row mb-3">
-                    <div class="col">
-                        <label style="font-weight: bold;" for="nm" class="form-label">Nombre:</label>
-                        <?php echo $row['nombreAlumno']?>
-                    </div>
-                    <div class="col">
-                        <label style="font-weight: bold;" for="ap" class="form-label">Apellido:</label>
-                        <?php echo $row['apellidoAlumno']?>
-                    </div>
-                    <div class="col">
-                        <label style="font-weight: bold;" for="ap" class="form-label">Estatus:</label>
-                        <?php echo $row['estatus_alumno']?>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="desc" class="form-label">Cambia la descripción del alumno</label>
-                    <input id="desc" type="text" class="form-control" name="desc" value="<?php echo $row['descripcionAlumno'] ?>">
-                </div>
-
-                <div class="mb-3">
-                    <label for="grupo" class="form-label">Estatus del alumno</label><br>
-                    <select name="estatus" class="form-select">
-                        <option value="Activo">Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
-                </div>
-
-                <div class="d-flex justify-content-center">
-                    <button style="margin-right: 10px;" class="btn btn-primary" name="submit" type="submit">Actualizar</button>
-                    <a href="grupo.php" class="btn btn-danger">Cancelar</a>
-                </div>
-            </form>
+        <!-- Tarjetas -->
+        <div class="cards">
+            <!-- Primera fila -->
+            <div class="card">
+                <div class="card-icon">📋</div>
+                <h3>Reportes</h3>
+                <p>Consulta y descarga reportes académicos de forma rápida.</p>
+                <button onclick="window.location.href='index.php'">Ir a Reportes</button>
+            </div>
+            <div class="card">
+                <div class="card-icon">👥</div>
+                <h3>Grupos</h3>
+                <p>Administra y organiza los grupos escolares de manera sencilla.</p>
+                <button onclick="window.location.href='calif.php'">Gestionar Grupos</button>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎓</div>
+                <h3>Alumnos</h3>
+                <p>Consulta, edita y organiza la información de los estudiantes.</p>
+                <button onclick="window.location.href='grupo.php'">Ver Alumnos</button>
+            </div>
         </div>
-    </main>
+
+        <!-- Segunda fila (centrada) -->
+        <div class="cards" style="margin-top: 15px;">
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <h3>Biblioteca Virtual</h3>
+                <p>Accede a recursos digitales y materiales para los estudiantes.</p>
+                <button onclick="window.location.href='biblioteca.php'">Explorar Biblioteca</button>
+            </div>
+            <div class="card">
+                <div class="card-icon">🚪</div>
+                <h3>Cerrar Sesión</h3>
+                <p>Sal del sistema de manera segura.</p>
+                <button onclick="window.location.href='../controlador_cerrar.php'">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script src="../app/script.js"></script>
+    
+    <script>
+        // Script para cerrar el modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-perfil');
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>

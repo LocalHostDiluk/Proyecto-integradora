@@ -1,10 +1,10 @@
 <html>
-    <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
 </html>
 
 <?php
@@ -19,12 +19,8 @@
         exit();
     }
 
-    $sql = "SELECT u.idUsuario, t.nombreTutor, t.apellidoTutor, t.telefonoTutor, t.direccionTutor, u.correoUsuario, u.rol, u.estatus_usuario FROM tutor t INNER JOIN usuario u ON t.idTutor = u.idTutor AND u.rol = 'Tutor'";
-    $resultado = $conn->query($sql);
-
-    // Consulta para obtener la información del usuario
     $idUsuario = $_SESSION["id"];
-    $sqlUsuario = "SELECT u.correoUsuario, t.nombreTutor, u.imagenPerfil, u.contraseña 
+    $sqlUsuario = "SELECT u.idUsuario, u.correoUsuario, t.nombreTutor, u.imagenPerfil 
         FROM usuario u
         INNER JOIN tutor t ON u.idTutor = t.idTutor
         WHERE u.idUsuario = ?";
@@ -34,108 +30,19 @@
     $result = $stmt->get_result();
     $usuario = $result->fetch_assoc();
 
-    // Procesar cambios en el formulario
+    $sql = "SELECT u.idUsuario, t.nombreTutor, t.apellidoTutor, t.telefonoTutor, t.direccionTutor, u.correoUsuario, u.rol, u.estatus_usuario FROM tutor t INNER JOIN usuario u ON t.idTutor = u.idTutor AND u.rol = 'Tutor'";
+    $resultado = $conn->query($sql);
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Cambiar correo o contraseña
-        if(!empty($_POST['correo'])){
+        if (!empty($_POST['correo']) || !empty($_POST['contraseña'])) {
             $nuevoCorreo = !empty($_POST['correo']) ? $_POST['correo'] : $usuario['correoUsuario'];
-            if (!empty($_POST['contraseña']) && !empty($_POST["confirmar_contraseña"])) {
-                if( $_POST['contraseña'] === $_POST['confirmar_contraseña']) {
-                    $nuevaContraseña = $_POST['contraseña'];
+            $nuevaContraseña = !empty($_POST['contraseña']) ? $_POST['contraseña'] : $usuario['contraseña'];
 
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Datos actualizados!',
-                                text: 'Tus datos se han actualizado correctamente.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-
-                    $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
-                    $stmt = $conn->prepare($sqlActualizar);
-                    $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
-                    $stmt->execute();
-
-                } else{
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Las contraseñas no coinciden.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-                }
-            }
-            else{
-                $nuevaContraseña = $usuario['contraseña'];
-                echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Datos actualizados!',
-                                text: 'Tus datos se han actualizado correctamente.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-                $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
-                $stmt = $conn->prepare($sqlActualizar);
-                $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
-                $stmt->execute();
-            }
-        }
-        else{
-            $nuevoCorreo = $usuario['correoUsuario'];
-            if (!empty($_POST['contraseña']) && !empty($_POST["confirmar_contraseña"])) {
-                if( $_POST['contraseña'] === $_POST['confirmar_contraseña']) {
-                    $nuevaContraseña = $_POST['contraseña'];
-
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Datos actualizados!',
-                                text: 'Tus datos se han actualizado correctamente.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-                    $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
-                    $stmt = $conn->prepare($sqlActualizar);
-                    $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
-                    $stmt->execute();
-
-                } else{
-                    echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Las contraseñas no coinciden.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-                }
-            }
-            else{
-                $nuevaContraseña = $usuario['contraseña'];
-                echo "
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Datos actualizados!',
-                                text: 'Tus datos se han actualizado correctamente.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        </script>";
-                $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
-                $stmt = $conn->prepare($sqlActualizar);
-                $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
-                $stmt->execute();
-
-            }
+            $sqlActualizar = "UPDATE usuario SET correoUsuario = ?, contraseña = ? WHERE idUsuario = ?";
+            $stmt = $conn->prepare($sqlActualizar);
+            $stmt->bind_param("ssi", $nuevoCorreo, $nuevaContraseña, $idUsuario);
+            $stmt->execute();
         }
 
         // Cambiar imagen de perfil
@@ -196,6 +103,59 @@
         }
     }
 
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if (isset($_POST['agregar_admin'])) {
+            $nombre = $_POST['nombre'];
+            $apellido = $_POST['apellido'];
+            $telefono = $_POST['telefono'];
+            $direccion = $_POST['direccion'];
+
+            $agregar = "INSERT INTO admin (nombreAdmin, apellidoAdmin, telefonoAdmin, direccionAdmin, fecha_creacionAdmin, estatus_admin) VALUES ('$nombre', '$apellido', '$telefono', '$direccion', NOW(), 'Activo')";
+
+            if ($conn->query($agregar) === TRUE) {
+                echo "
+                <script>
+                    Swal.fire({
+                        title: 'Inicio exitoso!',
+                        text: 'Ahora puedes navegar por el sitio',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = 'gestionar_usuario.php';
+                    });
+                </script>";
+            } else {
+                echo "
+                <script>
+                    Swal.fire({
+                        title: '¡Fallo al añador!',
+                        text: 'No se pudo crear',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        window.location.href = 'gestionar_usuario.php';
+                    });
+                </script>";
+            }
+            $stmt->close();
+        }
+    }
+    if (!empty($_POST['contraseña'])) {
+        $nuevaContraseña = $_POST['contraseña'];
+        $confirmarContraseña = $_POST['confirmar_contraseña'];
+    
+        if ($nuevaContraseña !== $confirmarContraseña) {
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Las contraseñas no coinciden.',
+                    confirmButtonText: 'Aceptar'
+                });
+            </script>";
+            exit;
+        }
+    }
 ?>
 
 <!DOCTYPE html>
